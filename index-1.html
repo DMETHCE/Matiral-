@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, interactive-widget=resizes-content">
+<title>SAP Material Bot | מקט חכם</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2236;
+    --border: #1e2d47;
+    --accent: #0ea5e9;
+    --accent2: #38bdf8;
+    --green: #22c55e;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --sap: #0070b1;
+    --sap2: #009de0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans Hebrew', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    height: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+  }
+
+  /* Header */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .header-logo {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, var(--sap), var(--sap2));
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; color: white;
+    letter-spacing: -0.5px;
+  }
+
+  .header-title { flex: 1; }
+  .header-title h1 { font-size: 15px; font-weight: 600; color: var(--text); }
+  .header-title p { font-size: 11px; color: var(--text3); margin-top: 1px; }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* Chat area */
+  .chat-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  .chat-container::-webkit-scrollbar { width: 4px; }
+  .chat-container::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* Messages */
+  .msg {
+    display: flex;
+    gap: 10px;
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .msg.user { flex-direction: row-reverse; }
+
+  .msg-avatar {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+  }
+
+  .msg.bot .msg-avatar {
+    background: linear-gradient(135deg, var(--sap), var(--accent));
+    color: white;
+  }
+
+  .msg.user .msg-avatar {
+    background: var(--surface2);
+    color: var(--text2);
+  }
+
+  .msg-bubble {
+    max-width: 75%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .msg.bot .msg-bubble {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px 12px 12px 12px;
+  }
+
+  .msg.user .msg-bubble {
+    background: linear-gradient(135deg, var(--sap), var(--accent));
+    color: white;
+    border-radius: 12px 4px 12px 12px;
+  }
+
+  /* Cards */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .material-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: right;
+  }
+
+  .material-card:hover {
+    border-color: var(--accent);
+    background: var(--surface2);
+    transform: translateY(-1px);
+  }
+
+  .material-card.selected {
+    border-color: var(--accent);
+    background: rgba(14,165,233,0.08);
+  }
+
+  .card-code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .card-name { font-size: 13px; font-weight: 500; }
+  .card-desc { font-size: 11px; color: var(--text3); margin-top: 3px; }
+
+  /* Form inputs */
+  .form-group {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .form-field label {
+    font-size: 11px;
+    color: var(--text2);
+    font-weight: 500;
+  }
+
+  .form-field input, .form-field select, .form-field textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    color: var(--text);
+    font-size: 13px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    direction: rtl;
+  }
+
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .form-field select option { background: var(--surface2); }
+
+  /* Upload zone */
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 10px;
+  }
+
+  .upload-zone:hover { border-color: var(--accent); background: rgba(14,165,233,0.04); }
+  .upload-zone.has-image { border-color: var(--green); border-style: solid; }
+
+  .upload-icon { font-size: 28px; margin-bottom: 6px; }
+  .upload-text { font-size: 13px; color: var(--text2); }
+  .upload-hint { font-size: 11px; color: var(--text3); margin-top: 3px; }
+
+  .upload-preview {
+    max-width: 100%;
+    max-height: 150px;
+    border-radius: 8px;
+    object-fit: contain;
+    margin-top: 8px;
+  }
+
+  /* Buttons */
+  .btn-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: inherit;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--sap), var(--accent));
+    color: white;
+  }
+
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+  .btn-secondary {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text2);
+  }
+
+  .btn-secondary:hover { border-color: var(--accent); color: var(--text); }
+
+  .btn-ghost {
+    background: transparent;
+    border: 1px dashed var(--border);
+    color: var(--text3);
+  }
+
+  /* SAP Preview */
+  .sap-preview {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+
+  .sap-header {
+    background: var(--sap);
+    padding: 8px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+  }
+
+  .sap-body { padding: 14px; }
+
+  .sap-field {
+    display: flex;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .sap-field:last-child { border-bottom: none; }
+
+  .sap-label {
+    font-size: 11px;
+    color: var(--text3);
+    width: 130px;
+    flex-shrink: 0;
+    font-family: 'IBM Plex Mono', monospace;
+    padding-top: 1px;
+  }
+
+  .sap-value {
+    font-size: 13px;
+    color: var(--text);
+    font-weight: 500;
+    flex: 1;
+  }
+
+  .sap-value.highlight { color: var(--accent); font-family: 'IBM Plex Mono', monospace; }
+  .sap-value.green { color: var(--green); }
+
+  /* Tag */
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .tag-blue { background: rgba(14,165,233,0.15); color: var(--accent); }
+  .tag-green { background: rgba(34,197,94,0.15); color: var(--green); }
+  .tag-amber { background: rgba(245,158,11,0.15); color: var(--amber); }
+
+  /* Input area */
+  .input-area {
+    flex-shrink: 0;
+    background: var(--surface);
+    border-top: 2px solid var(--accent);
+    padding: 14px 16px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+
+  .input-wrap {
+    flex: 1;
+    background: var(--surface2);
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    transition: border-color 0.2s;
+    min-height: 50px;
+  }
+
+  .input-wrap:focus-within { border-color: var(--accent2); box-shadow: 0 0 0 3px rgba(14,165,233,0.2); }
+
+  .input-wrap input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text);
+    font-size: 16px;
+    font-family: inherit;
+    padding: 12px 0;
+    direction: rtl;
+    min-width: 0;
+  }
+
+  .input-wrap input::placeholder { color: var(--text2); font-size: 15px; }
+
+  .send-btn {
+    width: 50px; height: 50px;
+    background: linear-gradient(135deg, var(--sap), var(--accent));
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    font-size: 20px;
+    transition: all 0.2s;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(14,165,233,0.3);
+  }
+
+  .send-btn:hover { transform: scale(1.05); opacity: 0.9; }
+
+  /* Typing indicator */
+  .typing {
+    display: flex;
+    gap: 4px;
+    padding: 4px 0;
+    align-items: center;
+  }
+
+  .typing span {
+    width: 6px; height: 6px;
+    background: var(--text3);
+    border-radius: 50%;
+    animation: typing 1.2s infinite;
+  }
+
+  .typing span:nth-child(2) { animation-delay: 0.2s; }
+  .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes typing {
+    0%,60%,100% { opacity: 0.3; transform: scale(1); }
+    30% { opacity: 1; transform: scale(1.2); }
+  }
+
+  /* Hierarchy breadcrumb */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+    font-size: 12px;
+  }
+
+  .bc-item { color: var(--text3); }
+  .bc-item.active { color: var(--accent); font-weight: 500; }
+  .bc-sep { color: var(--border); }
+
+  /* Suggestion chips */
+  .chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .chip {
+    padding: 5px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--text2);
+    transition: all 0.2s;
+  }
+
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-logo">SAP</div>
+  <div class="header-title">
+    <h1>בוט יצירת מקט חכם</h1>
+    <p>ממשק לתקן UNSPSC + SAP MM</p>
+  </div>
+  <div class="status-dot"></div>
+</div>
+
+<div class="chat-container" id="chatContainer"></div>
+
+<div class="input-area">
+  <div class="input-wrap">
+    <input type="text" id="userInput" placeholder="כתוב כאן... למשל: אני רוצה מקט למדפסת" />
+  </div>
+  <button class="send-btn" onclick="sendMessage()">➤</button>
+</div>
+
+<input type="file" id="fileInput" accept="image/*" style="display:none" onchange="handleFileUpload(event)" />
+
+<script>
+// UNSPSC Hierarchy - Global Standard Material Groups
+const UNSPSC = {
+  "43": {
+    name: "טכנולוגיית מידע ושידור",
+    code: "43000000",
+    children: {
+      "4320": {
+        name: "מחשבים ומסופים",
+        code: "43200000",
+        children: {
+          "432015": { name: "מחשבים נישאים ושולחניים", code: "43201500", items: ["מחשב נייד", "מחשב שולחני", "תחנת עבודה"] },
+          "432111": { name: "מדפסות ומכשירי הדפסה", code: "43211500", items: ["מדפסת לייזר", "מדפסת הזרקת דיו", "מדפסת רב-תכליתית", "מדפסת תלת-ממד", "פלוטר"] },
+          "432113": { name: "סורקים ורכיבי קלט", code: "43211300", items: ["סורק שולחני", "סורק נייד"] },
+          "432118": { name: "מסכים ומסופי תצוגה", code: "43211800", items: ["מסך LCD", "מסך OLED", "מסך מגע"] }
+        }
+      },
+      "4321": {
+        name: "רכיבי מחשב וציוד היקפי",
+        code: "43210000",
+        children: {
+          "432116": { name: "חומרי צריכה למדפסות", code: "43211600", items: ["טונר לייזר", "ראש הדפסה", "קלטת דיו", "תוף מדפסת", "נייר מדפסת"] },
+          "432119": { name: "אחסון נתונים", code: "43211900", items: ["דיסק קשיח", "SSD", "זיכרון USB", "כרטיס זיכרון"] }
+        }
+      }
+    }
+  },
+  "44": {
+    name: "ציוד משרדי ומכשירים",
+    code: "44000000",
+    children: {
+      "4411": {
+        name: "מכשירים ואביזרים משרדיים",
+        code: "44110000",
+        children: {
+          "441120": { name: "ציוד העתקה ופקסימיליה", code: "44112000", items: ["מכונת צילום", "פקס"] },
+          "441115": { name: "מכשירי כתיבה ועיצוב", code: "44111500", items: ["עט", "עפרון", "מחק", "תיק עפרונות"] }
+        }
+      }
+    }
+  },
+  "39": {
+    name: "כלי חשמל ותאורה",
+    code: "39000000",
+    children: {
+      "3912": {
+        name: "מוצרי תאורה",
+        code: "39120000",
+        children: {
+          "391220": { name: "נורות ומנורות", code: "39122000", items: ["נורת LED", "נורת פלואורסנט", "נורת הלוגן"] }
+        }
+      }
+    }
+  },
+  "26": {
+    name: "רכיבי חשמל ואלקטרוניקה",
+    code: "26000000",
+    children: {
+      "2611": {
+        name: "רכיבים אלקטרוניים",
+        code: "26110000",
+        children: {
+          "261115": { name: "מעגלים משולבים ועיבוד", code: "26111500", items: ["מיקרו-מעבד", "זיכרון RAM", "GPU"] },
+          "261117": { name: "חיישנים ותחנות מדידה", code: "26111700", items: ["חיישן טמפרטורה", "חיישן לחץ"] }
+        }
+      }
+    }
+  }
+};
+
+let state = {
+  step: "initial",
+  selectedSegment: null,
+  selectedFamily: null,
+  selectedClass: null,
+  selectedItem: null,
+  materialName: "",
+  materialData: {},
+  imageData: null,
+  imageAnalyzed: false
+};
+
+function addMessage(content, isUser = false) {
+  const container = document.getElementById('chatContainer');
+  const msg = document.createElement('div');
+  msg.className = `msg ${isUser ? 'user' : 'bot'}`;
+  msg.innerHTML = `
+    <div class="msg-avatar">${isUser ? '👤' : '🤖'}</div>
+    <div class="msg-bubble">${content}</div>
+  `;
+  container.appendChild(msg);
+  container.scrollTop = container.scrollHeight;
+  return msg;
+}
+
+function addTyping() {
+  const container = document.getElementById('chatContainer');
+  const msg = document.createElement('div');
+  msg.className = 'msg bot';
+  msg.id = 'typing-indicator';
+  msg.innerHTML = `
+    <div class="msg-avatar">🤖</div>
+    <div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>
+  `;
+  container.appendChild(msg);
+  container.scrollTop = container.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing-indicator');
+  if (t) t.remove();
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function botReply(html) {
+  addTyping();
+  await delay(700 + Math.random() * 400);
+  removeTyping();
+  addMessage(html);
+}
+
+// === FLOW STEPS ===
+
+async function showWelcome() {
+  await botReply(`
+    שלום! אני הבוט החכם ליצירת מקטים ב-SAP. 🏭<br><br>
+    אני עובד לפי <strong>תקן UNSPSC הבינלאומי</strong> לקבוצות חומרים,
+    ומאפשר לך ליצור מקט מוכן להזנה במערכת ה-SAP שלכם.<br><br>
+    <span class="tag tag-blue">✦ הייררכיה 4 רמות UNSPSC</span>&nbsp;
+    <span class="tag tag-green">✦ זיהוי תמונה AI</span>&nbsp;
+    <span class="tag tag-amber">✦ פלט SAP MM</span><br><br>
+    איזה מקט תרצה ליצור?
+    <div class="chips">
+      <div class="chip" onclick="handleChip('אני רוצה מקט למדפסת')">🖨️ מקט למדפסת</div>
+      <div class="chip" onclick="handleChip('מקט לחומרי מחשב')">💻 ציוד מחשב</div>
+      <div class="chip" onclick="handleChip('מקט לציוד משרדי')">📎 ציוד משרדי</div>
+      <div class="chip" onclick="handleChip('מקט לרכיבי חשמל')">⚡ חשמל ואלקטרוניקה</div>
+    </div>
+  `);
+}
+
+function handleChip(text) {
+  addMessage(text, true);
+  processUserInput(text);
+}
+
+function searchUNSPSC(query) {
+  const q = query.toLowerCase();
+  const results = [];
+
+  for (const [segKey, seg] of Object.entries(UNSPSC)) {
+    for (const [famKey, fam] of Object.entries(seg.children)) {
+      for (const [classKey, cls] of Object.entries(fam.children)) {
+        const match = cls.name.includes(query) ||
+          cls.items?.some(i => i.includes(query)) ||
+          (q.includes('מדפסת') && cls.code === '43211500') ||
+          (q.includes('טונר') && cls.code === '43211600') ||
+          (q.includes('מחשב') && cls.code === '43201500') ||
+          (q.includes('מסך') && cls.code === '43211800') ||
+          (q.includes('קלטת') && cls.code === '43211600') ||
+          (q.includes('ציוד משרד') && seg.code === '44000000') ||
+          (q.includes('חשמל') && seg.code === '26000000');
+
+        if (match) {
+          results.push({ segment: seg, family: fam, cls, segKey, famKey, classKey });
+        }
+      }
+    }
+  }
+  return results;
+}
+
+async function processUserInput(text) {
+  const lower = text.toLowerCase();
+
+  // --- In select_item step: user types vendor/model name → use as vendor hint ---
+  if (state.step === "select_item") {
+    const knownVendors = ['hp', 'canon', 'epson', 'dell', 'lenovo', 'brother', 'samsung', 'lexmark', 'xerox', 'kyocera', 'ricoh', 'oki'];
+    const isVendor = knownVendors.some(v => lower.includes(v));
+    if (isVendor) {
+      state.materialData['יצרן'] = text.toUpperCase();
+      await botReply(`👍 רשמתי יצרן: <strong>${text.toUpperCase()}</strong><br>עכשיו בחר את סוג הפריט מהרשימה למעלה, או הקלד דגם ספציפי:`);
+      return;
+    }
+    // Treat as item name
+    await selectItem(text);
+    return;
+  }
+
+  // --- In select_class step: user types something instead of clicking card ---
+  if (state.step === "select_class") {
+    // If they type a vendor or model, save it and prompt to pick a card
+    const knownVendors = ['hp', 'canon', 'epson', 'dell', 'lenovo', 'brother'];
+    const isVendor = knownVendors.some(v => lower.includes(v));
+    if (isVendor) {
+      state.materialData = state.materialData || {};
+      state.materialData['יצרן'] = text.toUpperCase();
+      await botReply(`✅ שמרתי יצרן: <strong>${text.toUpperCase()}</strong><br>כעת אנא לחץ על אחת מהקטגוריות למעלה כדי להמשיך.`);
+      return;
+    }
+    // Search again with new text
+    const results = searchUNSPSC(lower);
+    if (results.length > 0) {
+      state.searchResults = results;
+      let cardsHtml = '<strong>קטגוריות מתאימות:</strong><div class="card-grid">';
+      results.forEach((r, i) => {
+        cardsHtml += `<div class="material-card" id="card-${i}" onclick="selectClass(${i})">
+          <div class="card-code">${r.cls.code}</div>
+          <div class="card-name">${r.cls.name}</div>
+          <div class="card-desc">${r.segment.name} › ${r.family.name}</div>
+        </div>`;
+      });
+      cardsHtml += '</div>';
+      await botReply(cardsHtml);
+    } else {
+      await botReply(`לחץ על אחת מהקטגוריות שהוצגו למעלה להמשך התהליך 👆`);
+    }
+    return;
+  }
+
+  if (state.step === "initial" || state.step === "await_query") {
+    const results = searchUNSPSC(lower);
+
+    if (results.length === 0) {
+      await botReply(`לא מצאתי קטגוריה מתאימה ב-UNSPSC. נסה לתאר את הפריט אחרת, למשל: "מדפסת לייזר", "ציוד מחשב", "רכיב חשמל"`);
+      return;
+    }
+
+    state.step = "select_class";
+    state.searchResults = results;
+    state.materialData = state.materialData || {};
+
+    let cardsHtml = '<strong>מצאתי את קטגוריות ה-UNSPSC הרלוונטיות:</strong><div class="card-grid">';
+    results.forEach((r, i) => {
+      const bcHtml = `${r.segment.name} › ${r.family.name}`;
+      cardsHtml += `
+        <div class="material-card" id="card-${i}" onclick="selectClass(${i})">
+          <div class="card-code">${r.cls.code}</div>
+          <div class="card-name">${r.cls.name}</div>
+          <div class="card-desc">${bcHtml}</div>
+        </div>`;
+    });
+    cardsHtml += '</div>';
+
+    await botReply(cardsHtml);
+    return;
+  }
+
+  if (state.step === "await_name") {
+    state.materialName = text;
+    state.step = "fill_details";
+    showDetailsForm();
+    return;
+  }
+
+  if (state.step === "done") {
+    state = { step: "initial", materialData: {} };
+    await botReply(`בסדר! נתחיל מחדש. 🔄 מה תרצה ליצור?
+      <div class="chips">
+        <div class="chip" onclick="handleChip('מקט למדפסת')">🖨️ מדפסת</div>
+        <div class="chip" onclick="handleChip('מקט לציוד מחשב')">💻 מחשב</div>
+      </div>`);
+  }
+}
+
+function selectClass(i) {
+  const r = state.searchResults[i];
+  document.querySelectorAll('.material-card').forEach(c => c.classList.remove('selected'));
+  document.getElementById(`card-${i}`)?.classList.add('selected');
+
+  state.selectedSegment = r.segment;
+  state.selectedFamily = r.family;
+  state.selectedClass = r.cls;
+  state.step = "select_item";
+
+  showItemSelection(r);
+}
+
+async function showItemSelection(r) {
+  const items = r.cls.items || [];
+  let html = `
+    <strong>בחרת:</strong>
+    <div class="breadcrumb">
+      <span class="bc-item">${r.segment.name}</span>
+      <span class="bc-sep">›</span>
+      <span class="bc-item">${r.family.name}</span>
+      <span class="bc-sep">›</span>
+      <span class="bc-item active">${r.cls.name}</span>
+    </div><br>
+    בחר את סוג הפריט המדויק:
+    <div class="chips" style="margin-top:10px">`;
+
+  items.forEach(item => {
+    html += `<div class="chip" onclick="selectItem('${item}')">${item}</div>`;
+  });
+
+  html += `<div class="chip" onclick="selectItem('אחר - הזן ידנית')">✏️ אחר</div></div>`;
+  html += `<br>💡 <em>או העלה תמונה של הפריט לזיהוי אוטומטי:</em>`;
+  html += `<div class="upload-zone" onclick="triggerUpload()" id="uploadZone">
+    <div class="upload-icon">📷</div>
+    <div class="upload-text">לחץ להעלאת תמונה</div>
+    <div class="upload-hint">JPG, PNG, WEBP — ה-AI יזהה את פרטי הפריט</div>
+  </div>`;
+
+  await botReply(html);
+}
+
+function triggerUpload() {
+  document.getElementById('fileInput').click();
+}
+
+async function handleFileUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    state.imageData = e.target.result;
+    state.imageAnalyzed = true;
+
+    const uploadZone = document.getElementById('uploadZone');
+    if (uploadZone) {
+      uploadZone.classList.add('has-image');
+      uploadZone.innerHTML = `<img src="${state.imageData}" class="upload-preview" alt="uploaded"><div class="upload-text" style="color:var(--green);margin-top:8px">✅ תמונה הועלתה</div>`;
+    }
+
+    addMessage(`העליתי תמונה של הפריט 📷`, true);
+    await botReply(`מעולה! 🔍 מנתח את התמונה...`);
+
+    addTyping();
+    await delay(1800);
+    removeTyping();
+
+    // Simulate AI image analysis based on selected class
+    const analysis = analyzeImageMock(state.selectedClass);
+    state.materialData = { ...state.materialData, ...analysis };
+
+    await botReply(`זיהיתי מהתמונה:
+      <div style="margin-top:8px">
+        ${Object.entries(analysis).map(([k,v]) => `<div style="font-size:13px;padding:3px 0;color:var(--text2)"><span style="color:var(--accent)">▸ ${k}:</span> ${v}</div>`).join('')}
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="proceedToForm()">✅ אשר ועבור לטופס</button>
+        <button class="btn btn-secondary" onclick="triggerUpload()">🔄 העלה תמונה אחרת</button>
+      </div>`);
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+function analyzeImageMock(cls) {
+  const maps = {
+    "43211500": { "יצרן": "HP / Canon / Epson", "דגם": "LaserJet Pro M404dn", "סוג": "מדפסת לייזר חד-צדדית", "צבע": "שחור-לבן", "חיבור": "USB + רשת", "מהירות": "40 עמודים/דקה" },
+    "43211600": { "יצרן": "HP Original", "דגם": "CF258A", "סוג": "טונר לייזר שחור", "נפח": "3000 עמודים", "תאימות": "HP LaserJet Pro M404" },
+    "43201500": { "יצרן": "Dell", "דגם": "Latitude 5530", "סוג": "מחשב נייד עסקי", "מסך": "15.6 אינץ'", "זיכרון": "16GB DDR5" },
+    "44112000": { "יצרן": "Canon", "דגם": "iR-ADV 4545i", "סוג": "מכונת צילום רב-תכליתית", "מהירות": "45 עמודים/דקה" }
+  };
+  return maps[cls?.code] || { "סוג": "ציוד משרדי/טכנולוגי", "מצב": "חדש", "מקור": "יבוא" };
+}
+
+async function selectItem(item) {
+  if (item === 'אחר - הזן ידנית') {
+    addMessage(item, true);
+    state.step = "await_name";
+    await botReply(`מה שם המקט שברצונך ליצור? (תאר את הפריט בפירוט)`);
+    return;
+  }
+
+  state.selectedItem = item;
+  addMessage(item, true);
+  state.step = "await_name";
+  await botReply(`שם טוב! רצית לשים שם אחר למקט, או שנשתמש ב-<strong>"${item}"</strong>?
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="useSuggestedName('${item}')">✅ השתמש ב-"${item}"</button>
+      <button class="btn btn-secondary" onclick="requestCustomName()">✏️ שנה שם</button>
+    </div>`);
+}
+
+async function useSuggestedName(name) {
+  state.materialName = name;
+  state.step = "fill_details";
+  await proceedToForm();
+}
+
+async function requestCustomName() {
+  state.step = "await_name";
+  await botReply(`הקלד את שם המקט הרצוי:`);
+}
+
+async function proceedToForm() {
+  state.step = "fill_details";
+  await showDetailsForm();
+}
+
+async function showDetailsForm() {
+  const cls = state.selectedClass;
+  const preData = state.materialData;
+
+  const html = `
+    <strong>מלא את פרטי המקט:</strong>
+    <div class="breadcrumb">
+      <span class="bc-item">${state.selectedSegment?.name || ''}</span>
+      <span class="bc-sep">›</span>
+      <span class="bc-item">${state.selectedFamily?.name || ''}</span>
+      <span class="bc-sep">›</span>
+      <span class="bc-item active">${cls?.name || ''}</span>
+    </div>
+
+    <div class="form-group">
+      <div class="form-row">
+        <div class="form-field">
+          <label>שם המקט *</label>
+          <input type="text" id="f_name" value="${state.materialName || state.selectedItem || ''}" placeholder="למשל: מדפסת לייזר HP M404" />
+        </div>
+        <div class="form-field">
+          <label>קבוצת חומרים (UNSPSC)</label>
+          <input type="text" id="f_matgrp" value="${cls?.code || ''}" readonly style="color:var(--accent);font-family:'IBM Plex Mono',mono" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-field">
+          <label>יצרן</label>
+          <input type="text" id="f_vendor" value="${preData['יצרן'] || ''}" placeholder="HP / Canon / Dell..." />
+        </div>
+        <div class="form-field">
+          <label>מספר קטלוג יצרן</label>
+          <input type="text" id="f_catalog" value="${preData['דגם'] || ''}" placeholder="Part Number" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-field">
+          <label>יחידת מידה (UoM)</label>
+          <select id="f_uom">
+            <option value="EA">EA - יחידה</option>
+            <option value="SET">SET - סט</option>
+            <option value="BOX">BOX - קופסה</option>
+            <option value="PAK">PAK - חבילה</option>
+            <option value="KG">KG - קילוגרם</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>סוג מקט SAP</label>
+          <select id="f_mattype">
+            <option value="NLAG">NLAG - חומר ללא ניהול מלאי</option>
+            <option value="HAWA">HAWA - מוצר מסחרי</option>
+            <option value="DIEN">DIEN - שירות</option>
+            <option value="ROH">ROH - חומר גלם</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-field">
+          <label>תיאור קצר (עד 40 תווים)</label>
+          <input type="text" id="f_short" maxlength="40" value="${(state.materialName || state.selectedItem || '').substring(0,40)}" />
+        </div>
+        <div class="form-field">
+          <label>תיאור ארוך</label>
+          <input type="text" id="f_long" value="${preData['סוג'] || ''}" placeholder="תיאור מפורט..." />
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label>הערות</label>
+        <textarea id="f_notes" rows="2" style="resize:vertical" placeholder="הערות נוספות למקט...">${Object.entries(preData).map(([k,v])=>`${k}: ${v}`).join(', ')}</textarea>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="generateSAP()">🚀 צור מקט SAP</button>
+      <button class="btn btn-secondary" onclick="triggerUpload()">📷 עדכן תמונה</button>
+    </div>
+  `;
+
+  await botReply(html);
+}
+
+async function generateSAP() {
+  const name = document.getElementById('f_name')?.value || state.materialName;
+  const matgrp = document.getElementById('f_matgrp')?.value || state.selectedClass?.code;
+  const vendor = document.getElementById('f_vendor')?.value;
+  const catalog = document.getElementById('f_catalog')?.value;
+  const uom = document.getElementById('f_uom')?.value;
+  const mattype = document.getElementById('f_mattype')?.value;
+  const shortDesc = document.getElementById('f_short')?.value;
+  const longDesc = document.getElementById('f_long')?.value;
+  const notes = document.getElementById('f_notes')?.value;
+
+  if (!name) { alert('נא להזין שם מקט'); return; }
+
+  const matNum = 'MAT-' + Date.now().toString().slice(-8);
+  const now = new Date().toLocaleDateString('he-IL');
+
+  addMessage('צור מקט SAP ✅', true);
+
+  addTyping();
+  await delay(1200);
+  removeTyping();
+
+  state.step = "done";
+
+  const html = `
+    <strong>✅ המקט נוצר בהצלחה!</strong><br>
+
+    <div class="sap-preview">
+      <div class="sap-header">
+        <span>🏭</span> SAP MM — MM01: Create Material
+      </div>
+      <div class="sap-body">
+        <div class="sap-field">
+          <div class="sap-label">Material Number</div>
+          <div class="sap-value highlight">${matNum}</div>
+        </div>
+        <div class="sap-field">
+          <div class="sap-label">Material Type</div>
+          <div class="sap-value">${mattype}</div>
+        </div>
+        <div class="sap-field">
+          <div class="sap-label">Short Description</div>
+          <div class="sap-value">${shortDesc || name}</div>
+        </div>
+        <div class="sap-field">
+          <div class="sap-label">Long Description</div>
+          <div class="sap-value">${longDesc || name}</div>
+        </div>
+        <div class="sap-field">
+          <div class="sap-label">Material Group</div>
+          <div class="sap-value highlight">${matgrp}</div>
+        </div>
+        <div class="sap-field">
+          <div class="sap-label">UNSPSC Class</div>
+          <div class="sap-value">${state.selectedClass?.name || ''}</div>
+        </div>
+        <div class="sap-field">
+          <div class="sap-label">Base Unit of Measure</div>
+          <div class="sap-value">${uom}</div>
+        </div>
+        <div class="sap-field">
+          <div class="sap-label">Manufacturer</div>
+          <div class="sap-value">${vendor || 'לא צוין'}</div>
+        </div>
+        <div class="sap-field">
+          <div class="sap-label">Manufacturer Part No.</div>
+          <div class="sap-value">${catalog || 'לא צוין'}</div>
+        </div>
+        <div class="sap-field">
+          <div class="sap-label">Created On</div>
+          <div class="sap-value">${now}</div>
+        </div>
+        <div class="sap-field">
+          <div class="sap-label">Status</div>
+          <div class="sap-value green">✅ מוכן להזנה</div>
+        </div>
+        ${notes ? `<div class="sap-field"><div class="sap-label">Notes</div><div class="sap-value">${notes}</div></div>` : ''}
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="copyToClipboard('${matNum}')">📋 העתק מספר מקט</button>
+      <button class="btn btn-secondary" onclick="exportCSV()">💾 ייצא CSV</button>
+      <button class="btn btn-ghost" onclick="handleChip('מקט חדש')">➕ מקט חדש</button>
+    </div>
+
+    <br><span class="tag tag-blue">UNSPSC: ${matgrp}</span>&nbsp;
+    <span class="tag tag-green">SAP MM01 Ready</span>
+  `;
+
+  await botReply(html);
+
+  // Store for export
+  window._lastSAPData = { matNum, name, matgrp, vendor, catalog, uom, mattype, shortDesc, longDesc, notes, date: now };
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => {
+    alert(`✅ הועתק: ${text}`);
+  });
+}
+
+function exportCSV() {
+  const d = window._lastSAPData;
+  if (!d) return;
+  const csv = `Material Number,Material Type,Short Description,Material Group,UoM,Manufacturer,Part Number,Created\n${d.matNum},${d.mattype},"${d.shortDesc}",${d.matgrp},${d.uom},"${d.vendor}","${d.catalog}",${d.date}`;
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = `SAP_Material_${d.matNum}.csv`;
+  link.click();
+}
+
+function sendMessage() {
+  const input = document.getElementById('userInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  addMessage(text, true);
+  processUserInput(text);
+}
+
+document.getElementById('userInput').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') sendMessage();
+});
+
+// Start
+showWelcome();
+</script>
+</body>
+</html>
