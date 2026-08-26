@@ -1,20 +1,18 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
-@EndUserText.label: 'Green Path - vendor clearing info from ACDOCA'
-@Metadata.ignorePropagatedAnnotations: true
+@EndUserText.label: 'Green Path - vendor payment clearing from ACDOCA'
 /*
- * מקביל לסעיף ג'.2 בתוכנית ZMM_PROCESS_GREEN_PATH:
- * בדיקת תשלום בפועל - שורת ספק (KOART = 'K') עם מסמך סילוק (AUGBL).
+ * בדיקת תשלום בפועל - שורת ספק (KOART = 'K') שסולקה במסמך תשלום.
  *
- * הערות מול הקוד המקורי:
- * 1. בקוד המקורי נכתב WHERE bukrs = ... אבל ב-ACDOCA השדה הוא RBUKRS
- *    (שגיאת קומפילציה בקוד המקורי). כאן תוקן ל-RBUKRS.
- * 2. SELECT SINGLE בקוד המקורי מחזיר שורה שרירותית; כאן MAX( ) - דטרמיניסטי.
- *    כאשר קיים סילוק אחד לשורות הספק (המקרה הרגיל) התוצאה זהה.
- * 3. ה-fallback ל-BSEG אינו נדרש: בסביבת S/4HANA (שבה קיימת ACDOCA)
- *    נתוני הסילוק קיימים ב-ACDOCA. ראו מסמך האפיון.
- * 4. augbl like '2%': לפי האפיון העסקי "מספר מסמך התשלום חייב להתחיל ב-2".
- *    בקוד ה-ABAP המקורי כל AUGBL נחשב תשלום - ולכן סטורנו (שגם הוא מסלק
- *    את שורת הספק) סווג שם בטעות כ"שולם". תוקן באישור הלקוח, 26.08.2026.
+ * הערות:
+ * 1. RBUKRS - שם שדה קוד החברה ב-ACDOCA (בתוכנית המקורית נכתב BUKRS -
+ *    שגיאת קומפילציה).
+ * 2. RLDNR = '0L' - ledger מוביל בלבד; מונע כפילות שורות מ-ledgers
+ *    מקבילים (ממצא סוכן הביקורת). אם ה-ledger המוביל אצלכם שונה - לעדכן.
+ * 3. augbl like '2%' - לפי האפיון העסקי "מספר מסמך התשלום חייב להתחיל
+ *    ב-2"; סטורנו שמסלק את שורת הספק לא ייחשב תשלום (תוקן 26.08.2026).
+ * 4. MAX( ) - דטרמיניסטי (בתוכנית: SELECT SINGLE שרירותי). בסילוק במספר
+ *    מסמכי תשלום שונים AUGBL ו-AUGDT עלולים להגיע משורות שונות - ראו
+ *    סעיף 11 באפיון.
  */
 define view entity ZI_MM_GP_CLEARING
   as select from acdoca
@@ -27,7 +25,8 @@ define view entity ZI_MM_GP_CLEARING
       max( augdt )  as augdt
 }
 where
-      koart = 'K'
+      rldnr = '0L'
+  and koart = 'K'
   and augbl like '2%'
 group by
   rbukrs,

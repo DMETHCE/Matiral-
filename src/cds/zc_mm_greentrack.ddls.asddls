@@ -1,6 +1,5 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Green Path Tracking - live view (repl. ZMM_GREEN_TRACK)'
-@Metadata.ignorePropagatedAnnotations: true
 /*
  * ZC_MM_GREENTRACK
  * ----------------
@@ -9,14 +8,17 @@
  *
  * עקרון מנחה (הנחיית הלקוח, 26.08.2026): האפיון העסקי (מסמך ה-Word)
  * גובר על קוד ה-ABAP של התוכנית בכל מקום שבו הם סותרים.
- * הפערים מתועדים בסעיף 10 של docs/cds_green_track_spec.md.
+ * הפערים והתיקונים מתועדים בסעיפים 10-11 של docs/cds_green_track_spec.md.
  *
- * שרשרת הנתונים לפי האפיון:
+ * שרשרת הנתונים:
  *   /ILG/MM_GRPO_DET (הסט) -> QMMA (קודי סטטוס, MNGRP='ZPU')
- *   -> RBKP (מצב החשבונית הלוגיסטית, RBSTAT: 5=נרשמה, 2=נמחקה/סטורנו)
- *   -> BKPF דרך AWKEY=BELNR+GJAHR (מסמך פיננסי, XREVERSED)
- *   -> BKPF של מסמך הסטורנו דרך AWREF_REV+AWORG_REV (סיבת ביטול STGRD)
- *   -> T041CT (טקסט סיבת הביטול) ; ACDOCA (תשלום בפועל, AUGBL מתחיל ב-2)
+ *   -> RBKP (מצב החשבונית הלוגיסטית, RBSTAT: 5=נרשמה, 2=נמחקה)
+ *   -> BKPF דרך AWKEY=BELNR+GJAHR + AWTYP='RMRP' (מסמך פיננסי)
+ *   -> זיהוי סטורנו: STBLG מלא; מסמך הסטורנו נקרא לפי BUKRS+STBLG+STJAH
+ *      (סיבת הביטול STGRD על מסמך הסטורנו; האפיון והתוכנית הפנו
+ *      ל-XREVERSED/AWREF_REV/AWORG_REV שהם שדות ACDOCA ולא BKPF -
+ *      תוקן לקישור המפתח המלא, ממצא סוכני הביקורת 26.08.2026)
+ *   -> T041CT (טקסט סיבת הביטול, TXT40) ; ACDOCA (תשלום, AUGBL מתחיל ב-2)
  *
  * דרישות מערכת: S/4HANA 2020 ומעלה (view entity + ביטויים בתנאי ON) -
  * אושר על ידי הלקוח 26.08.2026.
@@ -28,28 +30,31 @@
 define view entity ZC_MM_GREENTRACK
   as select from /ilg/mm_grpo_det as grpo
 
-    // קודי הסטטוס של הסט מ-QMMA (קבוצת קודים ZPU)
+    // קודי הסטטוס של הסט מ-QMMA (קבוצת קודים ZPU, ללא פעילויות שנמחקו)
     left outer join ZI_MM_GP_QMMASTATUS as stat
       on stat.qmnum = grpo.qmnum
 
-    // מצב החשבונית הלוגיסטית - RBKP (לפי האפיון: 5=נרשמה, 2=נמחקה/סטורנו)
+    // מצב החשבונית הלוגיסטית - RBKP (5=נרשמה, 2=נמחקה; מפתח BELNR+GJAHR)
     left outer join rbkp as inv
       on  inv.belnr   = grpo.belnr
       and inv.gjahr   = grpo.gjahr
       and grpo.belnr <> ''
 
-    // המסמך הפיננסי דרך AWKEY = BELNR + GJAHR
+    // המסמך הפיננסי דרך AWKEY = BELNR + GJAHR, מוצמד לקוד החברה של
+    // החשבונית (מונע כפילות שורות ברישום חוצה-חברות - AWKEY אינו ייחודי)
     left outer join bkpf as fi
       on  fi.awkey     = concat( grpo.belnr, cast( grpo.gjahr as abap.char(4) ) )
       and fi.awtyp     = 'RMRP'
+      and fi.bukrs     = inv.bukrs
       and grpo.belnr  <> ''
       and grpo.gjahr  <> '0000'
 
-    // מסמך הסטורנו - לשליפת סיבת הביטול (STGRD)
+    // מסמך הסטורנו לפי המפתח המלא - לשליפת סיבת הביטול (STGRD)
     left outer join bkpf as rev
-      on  rev.awkey     = concat( fi.awref_rev, fi.aworg_rev )
-      and fi.xreversed  = 'X'
-      and fi.awref_rev <> ''
+      on  rev.bukrs  = fi.bukrs
+      and rev.belnr  = fi.stblg
+      and rev.gjahr  = fi.stjah
+      and fi.stblg  <> ''
 
     // טקסט סיבת סטורנו מ-T041CT בשפת המשתמש
     left outer join t041ct as stx
@@ -67,20 +72,20 @@ define view entity ZC_MM_GREENTRACK
 
       // ---------------------------------------------------------------
       // עץ ההחלטות לפי האפיון העסקי - קוד סטטוס
-      // ביטול = סטורנו פיננסי (XREVERSED) או חשבונית שנמחקה (RBSTAT='2')
+      // בוטלה = סטורנו פיננסי (STBLG מלא) או חשבונית שנמחקה (RBSTAT='2')
       // "הושלם" מחייב מסמכי המשך: MBLNR + BELNR + חשבונית רשומה (RBSTAT='5')
       // ---------------------------------------------------------------
       cast(
         case
           when stat.has_50 = 'X' and stat.has_60 = 'X' then
             case
-              when fi.xreversed = 'X' or inv.rbstat = '2'
+              when fi.stblg <> '' or inv.rbstat = '2'
                 or clr.augbl is null                     then '01' // נדחה לאחר אישור ובוטל
               else                                            '02' // נדחה לאחר אישור ושולם
             end
           when stat.has_60 = 'X' then
             case
-              when fi.xreversed = 'X' or inv.rbstat = '2' then '03' // נדחה לאחר אישור דורש
+              when fi.stblg <> '' or inv.rbstat = '2'    then '03' // נדחה לאחר אישור דורש
               when grpo.mblnr <> '' and grpo.belnr <> ''
                 and inv.rbstat = '5' then
                 case
@@ -102,14 +107,14 @@ define view entity ZC_MM_GREENTRACK
         case
           when stat.has_50 = 'X' and stat.has_60 = 'X' then
             case
-              when fi.xreversed = 'X' or inv.rbstat = '2'
+              when fi.stblg <> '' or inv.rbstat = '2'
                 or clr.augbl is null
                 then 'נדחה לאחר אישור ובוטל'
               else 'נדחה לאחר אישור ושולם'
             end
           when stat.has_60 = 'X' then
             case
-              when fi.xreversed = 'X' or inv.rbstat = '2'
+              when fi.stblg <> '' or inv.rbstat = '2'
                 then 'נדחה לאחר אישור דורש'
               when grpo.mblnr <> '' and grpo.belnr <> ''
                 and inv.rbstat = '5' then
@@ -164,15 +169,20 @@ define view entity ZC_MM_GREENTRACK
       clr.augbl                                              as augbl,
       clr.augdt                                              as augdt,
 
-      // סטורנו פיננסי (XREVERSED); חשבונית שנמחקה נראית דרך rbstat = '2'
+      // סטורנו פיננסי; חשבונית שנמחקה נראית דרך rbstat = '2'
       cast(
-        case when fi.xreversed = 'X'
+        case when fi.stblg <> ''
           then 'X' else ''
         end as abap.char(1) )                                as is_reversed,
 
-      // סיבת הביטול - עמודה רוחבית (החלטת דיון 4/8), קיימת רק לסטורנו פיננסי
-      case when fi.xreversed = 'X' then rev.stgrd else '' end as stgrd,
-      case when fi.xreversed = 'X' then stx.txt20 else '' end as stgrd_txt,
+      // סיבת הביטול - עמודה רוחבית (החלטת דיון 4/8), קיימת רק לסטורנו
+      // פיננסי; COALESCE מבטיח ריק (ולא NULL) גם כשהקישור לא מצא שורה
+      coalesce(
+        case when fi.stblg <> '' then rev.stgrd else '' end,
+        cast( '' as abap.char(2) ) )                         as stgrd,
+      coalesce(
+        case when fi.stblg <> '' then stx.txt40 else '' end,
+        cast( '' as abap.char(40) ) )                        as stgrd_txt,
 
       // תאריך השאילתה (במקור: sy-datum של ריצת ה-Batch)
       $session.system_date                                   as aedat
