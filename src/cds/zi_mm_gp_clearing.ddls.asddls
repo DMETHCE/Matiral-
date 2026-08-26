@@ -12,6 +12,9 @@
  *    כאשר קיים סילוק אחד לשורות הספק (המקרה הרגיל) התוצאה זהה.
  * 3. ה-fallback ל-BSEG אינו נדרש: בסביבת S/4HANA (שבה קיימת ACDOCA)
  *    נתוני הסילוק קיימים ב-ACDOCA. ראו מסמך האפיון.
+ * 4. augbl like '2%': לפי האפיון העסקי "מספר מסמך התשלום חייב להתחיל ב-2".
+ *    בקוד ה-ABAP המקורי כל AUGBL נחשב תשלום - ולכן סטורנו (שגם הוא מסלק
+ *    את שורת הספק) סווג שם בטעות כ"שולם". תוקן באישור הלקוח, 26.08.2026.
  */
 define view entity ZI_MM_GP_CLEARING
   as select from acdoca
@@ -25,7 +28,7 @@ define view entity ZI_MM_GP_CLEARING
 }
 where
       koart = 'K'
-  and augbl <> ''
+  and augbl like '2%'
 group by
   rbukrs,
   belnr,
