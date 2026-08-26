@@ -24,6 +24,7 @@
 | 2 | `SELECT ... FROM acdoca WHERE bukrs = ...` | ב-ACDOCA אין שדה `BUKRS` — שם השדה הוא `RBUKRS` → שגיאת קומפילציה גם לאחר תיקון #1 |
 | 3 | `TYPES ty_target` | `logical_status TYPE string` — טיפוס `STRING` אינו חוקי כעמודה רגילה בטבלה שקופה; ה-TYPE כלל אינו בשימוש |
 | 4 | `TEXT-001` | אלמנט טקסט לא מוגדר (אזהרה) |
+| 10 | `SELECT ... mm_gr_doc_ind FROM /ilg/mm_grpo_det` | בטבלה השדה נקרא `MM_GR_DOC_IND` (אומת מול צילום SE11) — `mm_gr_doc_ind` אינו קיים → שגיאת קומפילציה נוספת |
 
 **באגים לוגיים (מתקמפלים אך שגויים):**
 
@@ -32,7 +33,7 @@
 | 5 | `DATA lv_has_50 ... VALUE abap_false` בתוך `LOOP` | `DATA` מאותחל פעם אחת בלבד — הדגלים **לא מתאפסים בין סטים**, וסט "יורש" סטטוסים מהסט הקודם. ב-CDS נפתר באגרגציה לכל QMNUM |
 | 6 | `SELECT SINGLE ... FROM bkpf WHERE awkey =` ללא `AWTYP` | עלול לתפוס מסמך של אובייקט אחר עם אותו מפתח. ב-CDS נוסף סינון `awtyp = 'RMRP'` (לאימות — סעיף 8) |
 | 7 | `SELECT SINGLE` על ACDOCA | מחזיר שורה שרירותית כשיש כמה שורות ספק; ב-CDS — `MAX( )` דטרמיניסטי |
-| 8 | ריבוי שורות `GRPO` לאותו QMNUM | `MODIFY zmm_green_track` היה מוחק שורה קודמת (מפתח QMNUM); ה-View מחזיר את כולן — ראו סעיף 7.3 |
+| 8 | ~~ריבוי שורות `GRPO` לאותו QMNUM~~ | **ירד מהפרק** — צילום SE11 אימת שמפתח `/ILG/MM_GRPO_DET` הוא `MANDT + QMNUM` בלבד, כלומר שורה אחת להודעה |
 | 9 | `SELECT ... FROM qmma` ללא סינון `MNGRP` | הקודים 50/60/70/80 שייכים לקבוצת `ZPU` (אומת מול צילום VIQMMA); בלי הסינון, קוד זהה מקבוצה אחרת היה נתפס בטעות. ב-CDS נוסף `WHERE mngrp = 'ZPU'` |
 
 ## 3. אובייקטים שנוצרו
@@ -73,7 +74,7 @@
 | `logical_status` | עץ ההחלטות → טקסט עברי **זהה 1:1** | ראו סעיף 6 |
 | `is_monitor` | `'X'` אם `monitor_indicator` או `extra_vlue_ind` לא ריקים | סעיף א' |
 | `mblnr` | `grpo.mblnr` | |
-| `mblnr_handled_manually` | `'X'` אם `mn_gr_doc_ind` ∈ {2,4} | סעיף א' |
+| `mblnr_handled_manually` | `'X'` אם `mm_gr_doc_ind` ∈ {2,4} | סעיף א' |
 | `belnr_mm`, `gjahr_mm` | `grpo.belnr`, `grpo.gjahr` | |
 | `bukrs`, `belnr_fi`, `gjahr_fi` | `fi.bukrs/belnr/gjahr` | NULL כשאין מסמך FI (שקול ל-initial) |
 | `is_paid` | `'X'` אם נמצא `clr.augbl` | ג'.2 |
@@ -94,7 +95,7 @@
 | 01 | נדחה לאחר אישור ובוטל | has_50 **וגם** has_60, וגם (reversed **או** לא שולם) |
 | 02 | נדחה לאחר אישור ושולם | has_50 **וגם** has_60, וגם שולם ולא reversed |
 | 03 | נדחה לאחר אישור דורש | has_60 (בלי has_50), וגם reversed |
-| 04 | אושר והושלם לאחר עיסוק ידני | has_60, לא reversed, וגם (has_70 או has_80 או mn_gr_doc_ind ∈ {2,4}) |
+| 04 | אושר והושלם לאחר עיסוק ידני | has_60, לא reversed, וגם (has_70 או has_80 או mm_gr_doc_ind ∈ {2,4}) |
 | 05 | אושר והושלם ללא תקלה | has_60 בלבד, ללא אף אחד מהתנאים לעיל |
 | 06 | נדחה על ידי דורש | has_50 בלבד |
 | 99 | בתהליך | אף אחד מהקודים |
@@ -102,7 +103,7 @@
 דיוק שיחזור: במקור `is_paid = abap_false` פירושו `augbl` ריק → ב-CDS
 `clr.augbl IS NULL` (ה-View של הסילוק מסנן `augbl <> ''`, לכן NULL ⇔ לא שולם).
 בתנאי 04 הוחלף `mblnr_handled_manually = 'X'` בביטוי המקורי שלו
-(`mn_gr_doc_ind` ∈ {2,4}) — זהות לוגית מלאה.
+(`mm_gr_doc_ind` ∈ {2,4}) — זהות לוגית מלאה.
 
 ## 7. הבדלים מודעים מהתוכנית המקורית
 
@@ -112,26 +113,32 @@
    ל-BSEG (או BSIK/BSAK).
 2. **סינון `AWTYP = 'RMRP'`** נוסף בקישור ל-BKPF (באג #6). אם החשבוניות
    נרשמות עם AWTYP אחר — יש לעדכן את הערך.
-3. **ריבוי שורות לאותו QMNUM:** אם ב-`/ILG/MM_GRPO_DET` יש כמה שורות לאותו
-   QMNUM, ה-`MODIFY` המקורי השאיר רק את האחרונה (מפתח הטבלה), וה-View מחזיר
-   את כולן. אם רצוי "שורה אחת ל-QMNUM" — עדכנו אותי ואוסיף כלל בחירה מוגדר
-   (למשל המסמך האחרון).
+3. **ריבוי שורות לאותו QMNUM — ירד מהפרק:** צילום SE11 (26.08.2026) אימת
+   שמפתח `/ILG/MM_GRPO_DET` הוא `MANDT + QMNUM` בלבד — שורה אחת להודעה,
+   ולכן ה-View מחזיר בדיוק שורה אחת לכל QMNUM כמו טבלת היעד המתוכננת.
 4. **`aedat`/`aezet`** — ראו סעיף 5.
 5. **מסך הבחירה** (`s_qmnum`, `p_clear`) מתייתר — הסינון נעשה ב-`WHERE` של
    הצרכן (SE16H / ALV / OData), ואין נתונים ישנים למחוק.
 6. **סינון `MNGRP = 'ZPU'`** נוסף באגרגציית QMMA (באג #9) — על פי צילום
    VIQMMA שסופק ב-26.08.2026.
 
-## 8. פתוח לאימות — נדרשים צילומים (SE11 → Display → Fields)
+## 8. סטטוס אימות
 
-1. **`/ILG/MM_GRPO_DET`** — רשימת השדות המלאה כולל Data Elements. הנחות
-   שיש לאמת: `BELNR` באורך 10; `GJAHR` מסוג NUMC4; `MONITOR_INDICATOR`
-   ו-`EXTRA_VLUE_IND` שדות CHAR (הבדיקה היא "לא ריק"); ערכי `MN_GR_DOC_IND`
-   הם '2'/'4' כתווים.
-2. **`ZMM_GREEN_TRACK`** — אם בכל זאת נוצרה ב-SE11 (להשוואת שמות/טיפוסים).
-3. **אישור סביבה** — S/4HANA 2020 ומעלה? (נדרש ל-view entity; קובע גם את
+**אומת (צילומי SE11 / VIQMMA מ-26.08.2026):**
+
+- **`/ILG/MM_GRPO_DET`** — מפתח `MANDT + QMNUM`; `QMNUM` CHAR12;
+  `BELNR` CHAR10 (`RE_BELNR`); `GJAHR` NUMC4; `MBLNR` CHAR10; `MJAHR` NUMC4;
+  `MM_GR_DOC_IND` / `MONITOR_INDICATOR` / `EXTRA_VLUE_IND` שדות CHAR1.
+  שם השדה הנכון הוא `MM_GR_DOC_IND` (לא `MN_GR_DOC_IND` כפי שנכתב בתוכנית —
+  שגיאה #10).
+- **קבוצת קודי QMMA** — `MNGRP = 'ZPU'` (באג #9).
+
+**נותר לאימות:**
+
+1. **`ZMM_GREEN_TRACK`** — אם בכל זאת נוצרה ב-SE11 (להשוואת שמות/טיפוסים).
+2. **אישור סביבה** — S/4HANA 2020 ומעלה? (נדרש ל-view entity; קובע גם את
    שאלת BSEG בסעיף 7.1)
-4. **אישור `AWTYP = 'RMRP'`** לחשבוניות במסלול הירוק.
+3. **אישור `AWTYP = 'RMRP'`** לחשבוניות במסלול הירוק.
 
 ## 9. בדיקות קבלה מוצעות
 

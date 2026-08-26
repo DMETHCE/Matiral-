@@ -16,9 +16,13 @@
  *
  * דרישות מערכת: S/4HANA 2020 ומעלה (view entity + ביטויים בתנאי ON).
  *
- * הנחות לאימות מול צילומי SE11 (ראו docs/cds_green_track_spec.md):
- *   - /ILG/MM_GRPO_DET: BELNR באורך 10, GJAHR מסוג NUMC4,
- *     MONITOR_INDICATOR / EXTRA_VLUE_IND שדות CHAR (בדיקת "לא ריק").
+ * מבנה /ILG/MM_GRPO_DET אומת מול צילום SE11 (26.08.2026):
+ *   - מפתח: MANDT + QMNUM (שורה אחת להודעה); BELNR CHAR10 (RE_BELNR),
+ *     GJAHR NUMC4, MONITOR_INDICATOR / EXTRA_VLUE_IND / MM_GR_DOC_IND שדות CHAR1.
+ *   - שם השדה בטבלה הוא MM_GR_DOC_IND - בתוכנית המקורית נכתב בטעות
+ *     mn_gr_doc_ind (שגיאת קומפילציה נוספת שם).
+ *
+ * הנחה שנותרה לאימות (ראו docs/cds_green_track_spec.md):
  *   - החשבונית נרשמת ב-BKPF עם AWTYP = 'RMRP' (חשבונית לוגיסטית MIRO).
  *     בקוד המקורי לא סונן AWTYP - הסינון כאן מונע התאמה שגויה לאובייקט אחר.
  */
@@ -72,8 +76,8 @@ define view entity ZC_MM_GREENTRACK
             case
               when fi.xreversed = 'X'                      then '03' // נדחה לאחר אישור דורש
               when stat.has_70 = 'X' or stat.has_80 = 'X'
-                or grpo.mn_gr_doc_ind = '2'
-                or grpo.mn_gr_doc_ind = '4'                then '04' // אושר והושלם לאחר עיסוק ידני
+                or grpo.mm_gr_doc_ind = '2'
+                or grpo.mm_gr_doc_ind = '4'                then '04' // אושר והושלם לאחר עיסוק ידני
               else                                              '05' // אושר והושלם ללא תקלה
             end
           when stat.has_50 = 'X'                           then '06' // נדחה על ידי דורש
@@ -96,8 +100,8 @@ define view entity ZC_MM_GREENTRACK
               when fi.xreversed = 'X'
                 then 'נדחה לאחר אישור דורש'
               when stat.has_70 = 'X' or stat.has_80 = 'X'
-                or grpo.mn_gr_doc_ind = '2'
-                or grpo.mn_gr_doc_ind = '4'
+                or grpo.mm_gr_doc_ind = '2'
+                or grpo.mm_gr_doc_ind = '4'
                 then 'אושר והושלם לאחר עיסוק ידני'
               else 'אושר והושלם ללא תקלה'
             end
@@ -120,7 +124,7 @@ define view entity ZC_MM_GREENTRACK
       // סעיף א': אינדיקטור טובין ידני (ערכים 2 או 4)
       cast(
         case
-          when grpo.mn_gr_doc_ind = '2' or grpo.mn_gr_doc_ind = '4'
+          when grpo.mm_gr_doc_ind = '2' or grpo.mm_gr_doc_ind = '4'
             then 'X' else ''
         end as abap.char(1) )                                as mblnr_handled_manually,
 
