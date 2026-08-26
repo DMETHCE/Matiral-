@@ -22,9 +22,10 @@
  *   - שם השדה בטבלה הוא MM_GR_DOC_IND - בתוכנית המקורית נכתב בטעות
  *     mn_gr_doc_ind (שגיאת קומפילציה נוספת שם).
  *
- * הנחה שנותרה לאימות (ראו docs/cds_green_track_spec.md):
- *   - החשבונית נרשמת ב-BKPF עם AWTYP = 'RMRP' (חשבונית לוגיסטית MIRO).
- *     בקוד המקורי לא סונן AWTYP - הסינון כאן מונע התאמה שגויה לאובייקט אחר.
+ * אושר על ידי הלקוח (26.08.2026): סביבת S/4HANA 2020 ומעלה;
+ * סינון AWTYP = 'RMRP' נשאר (בקוד המקורי לא סונן AWTYP - הסינון כאן
+ * מונע התאמה שגויה לאובייקט אחר); טבלת ZMM_GREEN_TRACK לא תוקם -
+ * ה-View הזה הוא התוצר הסופי. ראו docs/cds_green_track_spec.md.
  */
 define view entity ZC_MM_GREENTRACK
   as select from /ilg/mm_grpo_det as grpo
