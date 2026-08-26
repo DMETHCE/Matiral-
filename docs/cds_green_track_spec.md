@@ -2,7 +2,7 @@
 
 **מחליף את:** התוכנית `ZMM_PROCESS_GREEN_PATH` + טבלת היעד `ZMM_GREEN_TRACK`
 **תאריך:** 26.08.2026
-**סטטוס:** טיוטה לאישור — ממתין לצילומי SE11 (ראו סעיף 8)
+**סטטוס:** מבנה `/ILG/MM_GRPO_DET` וקבוצת הקודים `ZPU` אומתו מול צילומים; נותרו 3 סעיפי אימות (ראו סעיף 8)
 
 ---
 
@@ -24,7 +24,7 @@
 | 2 | `SELECT ... FROM acdoca WHERE bukrs = ...` | ב-ACDOCA אין שדה `BUKRS` — שם השדה הוא `RBUKRS` → שגיאת קומפילציה גם לאחר תיקון #1 |
 | 3 | `TYPES ty_target` | `logical_status TYPE string` — טיפוס `STRING` אינו חוקי כעמודה רגילה בטבלה שקופה; ה-TYPE כלל אינו בשימוש |
 | 4 | `TEXT-001` | אלמנט טקסט לא מוגדר (אזהרה) |
-| 10 | `SELECT ... mm_gr_doc_ind FROM /ilg/mm_grpo_det` | בטבלה השדה נקרא `MM_GR_DOC_IND` (אומת מול צילום SE11) — `mm_gr_doc_ind` אינו קיים → שגיאת קומפילציה נוספת |
+| 10 | `SELECT ... mn_gr_doc_ind FROM /ilg/mm_grpo_det` | בטבלה השדה נקרא `MM_GR_DOC_IND` (אומת מול צילום SE11) — `mn_gr_doc_ind` (עם N) אינו קיים → שגיאת קומפילציה נוספת |
 
 **באגים לוגיים (מתקמפלים אך שגויים):**
 
