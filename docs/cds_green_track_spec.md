@@ -33,12 +33,13 @@
 | 6 | `SELECT SINGLE ... FROM bkpf WHERE awkey =` ללא `AWTYP` | עלול לתפוס מסמך של אובייקט אחר עם אותו מפתח. ב-CDS נוסף סינון `awtyp = 'RMRP'` (לאימות — סעיף 8) |
 | 7 | `SELECT SINGLE` על ACDOCA | מחזיר שורה שרירותית כשיש כמה שורות ספק; ב-CDS — `MAX( )` דטרמיניסטי |
 | 8 | ריבוי שורות `GRPO` לאותו QMNUM | `MODIFY zmm_green_track` היה מוחק שורה קודמת (מפתח QMNUM); ה-View מחזיר את כולן — ראו סעיף 7.3 |
+| 9 | `SELECT ... FROM qmma` ללא סינון `MNGRP` | הקודים 50/60/70/80 שייכים לקבוצת `ZPU` (אומת מול צילום VIQMMA); בלי הסינון, קוד זהה מקבוצה אחרת היה נתפס בטעות. ב-CDS נוסף `WHERE mngrp = 'ZPU'` |
 
 ## 3. אובייקטים שנוצרו
 
 | אובייקט | סוג | תפקיד |
 |---------|-----|--------|
-| `ZI_MM_GP_QMMASTATUS` | View Entity (אגרגציה) | דגלי has_50/60/70/80 לכל QMNUM מ-QMMA |
+| `ZI_MM_GP_QMMASTATUS` | View Entity (אגרגציה) | דגלי has_50/60/70/80 לכל QMNUM מ-QMMA, מסונן לקבוצת פעילויות `MNGRP = 'ZPU'` (אומת מול צילום VIQMMA, 26.08.2026) |
 | `ZI_MM_GP_CLEARING` | View Entity (אגרגציה) | AUGBL/AUGDT משורות ספק (`KOART='K'`) ב-ACDOCA |
 | `ZC_MM_GREENTRACK` | View Entity ראשי | חיבור הכל + עץ ההחלטות |
 
@@ -51,7 +52,7 @@
 | מקור | Alias | קישור | מקביל בתוכנית |
 |------|-------|--------|----------------|
 | `/ILG/MM_GRPO_DET` | `grpo` | בסיס | סעיף 1 — שליפת הסטים |
-| `ZI_MM_GP_QMMASTATUS` (QMMA) | `stat` | `qmnum = grpo.qmnum` | סעיף ב' — קודי 50/60/70/80 |
+| `ZI_MM_GP_QMMASTATUS` (QMMA, `MNGRP='ZPU'`) | `stat` | `qmnum = grpo.qmnum` | סעיף ב' — קודי 50/60/70/80 |
 | `BKPF` | `fi` | `awkey = concat(belnr, gjahr)` + `awtyp='RMRP'`, רק כאשר belnr/gjahr מלאים | סעיף ג' — `CONCATENATE` + `SELECT SINGLE` |
 | `BKPF` | `rev` | `awkey = concat(fi.awref_rev, fi.aworg_rev)`, רק כאשר `fi.xreversed='X'` | ג'.1 — מסמך הסטורנו |
 | `T041CT` | `stx` | `stgrd = rev.stgrd`, `spras = $session.system_language` | סעיף 3 — טקסט סיבת סטורנו |
@@ -118,6 +119,8 @@
 4. **`aedat`/`aezet`** — ראו סעיף 5.
 5. **מסך הבחירה** (`s_qmnum`, `p_clear`) מתייתר — הסינון נעשה ב-`WHERE` של
    הצרכן (SE16H / ALV / OData), ואין נתונים ישנים למחוק.
+6. **סינון `MNGRP = 'ZPU'`** נוסף באגרגציית QMMA (באג #9) — על פי צילום
+   VIQMMA שסופק ב-26.08.2026.
 
 ## 8. פתוח לאימות — נדרשים צילומים (SE11 → Display → Fields)
 

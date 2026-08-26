@@ -6,6 +6,10 @@
  * איסוף קודי סטטוס 50/60/70/80 מטבלת QMMA לכל הודעה (QMNUM).
  * במקום לולאה עם דגלים - אגרגציית MAX על ביטויי CASE.
  * (בכך גם נפתר הבאג בתוכנית המקורית: הדגלים lv_has_xx לא אופסו בין סטים)
+ *
+ * סינון MNGRP = 'ZPU': הקודים 50/60/70/80 שייכים לקבוצת הפעילויות ZPU
+ * (אומת מול צילום VIQMMA). בקוד ה-ABAP המקורי הסינון הזה חסר -
+ * קוד זהה מקבוצה אחרת היה נתפס שם בטעות.
  */
 define view entity ZI_MM_GP_QMMASTATUS
   as select from qmma
@@ -17,5 +21,7 @@ define view entity ZI_MM_GP_QMMASTATUS
       max( case mncod when '70' then 'X' else '' end ) as has_70,
       max( case mncod when '80' then 'X' else '' end ) as has_80
 }
+where
+  mngrp = 'ZPU'
 group by
   qmnum
