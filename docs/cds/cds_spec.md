@@ -13,9 +13,9 @@
 
 | אובייקט | קובץ | תפקיד |
 |---------|------|--------|
-| `ZI_MM_GP_QMMASTATUS` | `src/cds/zi_mm_gp_qmmastatus.ddls.asddls` | דגלי קודים 50/60/70/80 לכל QMNUM מ-QMMA (`MNGRP='ZPU'`, ללא פעילויות שנמחקו) |
-| `ZI_MM_GP_CLEARING` | `src/cds/zi_mm_gp_clearing.ddls.asddls` | תשלום בפועל מ-ACDOCA: שורות ספק שסולקו במסמך תשלום ('2%'), ledger מוביל |
-| `ZC_MM_GREENTRACK` | `src/cds/zc_mm_greentrack.ddls.asddls` | ה-View הראשי: חיבור הכל + עץ ההחלטות |
+| `/ILG/I_MM_Gp_Qmma_Status` | `src/cds/ilg_i_mm_gp_qmma_status.ddls.asddls` | דגלי קודים 50/60/70/80 לכל QMNUM מ-QMMA (`MNGRP='ZPU'`, ללא פעילויות שנמחקו) |
+| `/ILG/I_MM_Gp_Clearing` | `src/cds/ilg_i_mm_gp_clearing.ddls.asddls` | תשלום בפועל מ-ACDOCA: שורות ספק שסולקו במסמך תשלום ('2%'), ledger מוביל |
+| `/ILG/I_MM_Green_Track` | `src/cds/ilg_i_mm_green_track.ddls.asddls` | ה-View הראשי: חיבור הכל + עץ ההחלטות |
 
 **דרישת מערכת:** S/4HANA 2020 ומעלה (`define view entity`, ביטויים בתנאי
 `ON`) — אושר על ידי הלקוח.
@@ -27,34 +27,36 @@
 | מקור | Alias | קישור | הערה |
 |------|-------|--------|------|
 | `/ILG/MM_GRPO_DET` | `grpo` | בסיס; מפתח `MANDT+QMNUM` — שורה אחת לסט | מבנה אומת מול צילום SE11, 26.08.2026 |
-| `ZI_MM_GP_QMMASTATUS` | `stat` | `qmnum = grpo.qmnum` | |
+| `/ILG/I_MM_Gp_Qmma_Status` | `stat` | `qmnum = grpo.qmnum` | |
 | `RBKP` | `inv` | `belnr = grpo.belnr, gjahr = grpo.gjahr` | מצב החשבונית הלוגיסטית: `RBSTAT` 5=נרשמה, 2=נמחקה |
 | `BKPF` | `fi` | `awkey = concat(belnr, gjahr)` + `awtyp='RMRP'` + `bukrs = inv.bukrs` | הצמדת קוד החברה מונעת כפילות ברישום חוצה-חברות |
 | `BKPF` | `rev` | מפתח מלא `bukrs = fi.bukrs, belnr = fi.stblg, gjahr = fi.stjah` כאשר `fi.stblg <> ''` | מסמך הסטורנו; סיבת הביטול `STGRD` נקראת ממנו |
 | `T041CT` | `stx` | `stgrd = rev.stgrd`, `spras = $session.system_language` | טקסט סיבת הביטול (`TXT40`) |
-| `ZI_MM_GP_CLEARING` | `clr` | `bukrs/belnr/gjahr = fi.*` | |
+| `/ILG/I_MM_Gp_Clearing` | `clr` | `bukrs/belnr/gjahr = fi.*` | |
 
 לאחר תיקוני הביקורת כל קישור הוא לכל היותר 1:1 — ה-View מחזיר **בדיוק
 שורה אחת לכל QMNUM**.
 
 ## 3. עמודות ה-View
 
+שמות העמודות ב-**CamelCase** לפי תקן abap-ilg (`cdsrules.md` כלל #8).
+
 | עמודה | מקור/נוסחה | הערה |
 |--------|------------|------|
-| `qmnum` (key) | `grpo.qmnum` | מספר הסט |
-| `logical_status_code` | עץ ההחלטות → 01–07/99 | לסינון תוכניתי יציב |
-| `logical_status` | עץ ההחלטות → טקסט עברי | ניסוחי האפיון העסקי |
-| `is_monitor` | `'X'` אם `MONITOR_INDICATOR` או `EXTRA_VLUE_IND` (מעל 10 אלש"ח) לא ריקים | אינדיקטור בקרה ידנית — בוליאני, כהחלטת דיון 4/8 |
-| `mblnr` | `grpo.mblnr` | מסמך טובין |
-| `mblnr_handled_manually` | `'X'` אם `MM_GR_DOC_IND` ∈ {2,4} | טובין ידני (2=מסמך אחד, 4=כמה) |
-| `belnr_mm`, `gjahr_mm` | `grpo.belnr`, `grpo.gjahr` | החשבונית הלוגיסטית |
-| `rbstat` | `inv.rbstat` | מצב החשבונית (5/2/ריק=אין) |
-| `bukrs`, `belnr_fi`, `gjahr_fi` | `fi.*` | המסמך הפיננסי |
-| `is_paid` | `'X'` אם קיים סילוק במסמך תשלום ('2%') | אינדיקטור בוליאני רוחבי, כהחלטת דיון 4/8 |
-| `augbl`, `augdt` | `MAX` מ-ACDOCA (ledger מוביל, `KOART='K'`, `AUGBL LIKE '2%'`) | מסמך/תאריך תשלום |
-| `is_reversed` | `'X'` אם `fi.stblg <> ''` | קיים מסמך סטורנו פיננסי |
-| `stgrd`, `stgrd_txt` | ממסמך הסטורנו + `T041CT.TXT40`, עטופים `COALESCE` | עמודות רוחביות כהחלטת דיון 4/8; תמיד ריק ולא NULL |
-| `aedat` | `$session.system_date` | תאריך השאילתה (View חי — אין "שעת עדכון") |
+| `Qmnum` (key) | `grpo.qmnum` | מספר הסט |
+| `LogicalStatusCode` | עץ ההחלטות → 01–07/99 | לסינון תוכניתי יציב |
+| `LogicalStatus` | עץ ההחלטות → טקסט עברי | ניסוחי האפיון העסקי |
+| `IsMonitor` | `'X'` אם `MONITOR_INDICATOR` או `EXTRA_VLUE_IND` (מעל 10 אלש"ח) לא ריקים | אינדיקטור בקרה ידנית — בוליאני, כהחלטת דיון 4/8 |
+| `Mblnr` | `grpo.mblnr` | מסמך טובין |
+| `MblnrHandledManually` | `'X'` אם `MM_GR_DOC_IND` ∈ {2,4} | טובין ידני (2=מסמך אחד, 4=כמה) |
+| `BelnrMm`, `GjahrMm` | `grpo.belnr`, `grpo.gjahr` | החשבונית הלוגיסטית |
+| `Rbstat` | `inv.rbstat` | מצב החשבונית (5/2/ריק=אין) |
+| `Bukrs`, `BelnrFi`, `GjahrFi` | `fi.*` | המסמך הפיננסי |
+| `IsPaid` | `'X'` אם קיים סילוק במסמך תשלום ('2%') | אינדיקטור בוליאני רוחבי, כהחלטת דיון 4/8 |
+| `Augbl`, `Augdt` | `MAX` מ-ACDOCA (ledger מוביל, `KOART='K'`, `AUGBL LIKE '2%'`) | מסמך/תאריך תשלום |
+| `IsReversed` | `'X'` אם `fi.xreversed = 'X'` | בוצע סטורנו פיננסי |
+| `Stgrd`, `StgrdTxt` | ממסמך הסטורנו (`STBLG`/`STJAH`) + `T041CT.TXT40`, עטופים `COALESCE` | עמודות רוחביות כהחלטת דיון 4/8; תמיד ריק ולא NULL |
+| `Aedat` | `$session.system_date` | תאריך השאילתה (View חי — אין "שעת עדכון") |
 
 ## 4. עץ ההחלטות
 
@@ -135,12 +137,13 @@
 
 ## 8. שלבי התקנה (ADT)
 
-1. Eclipse ADT → חבילה ייעודית (למשל `ZMM_GREEN_PATH`) + Transport.
-2. יצירת שלושה Data Definitions **לפי הסדר**: `ZI_MM_GP_QMMASTATUS`,
-   `ZI_MM_GP_CLEARING`, ואז `ZC_MM_GREENTRACK` — הדבקת תוכן הקבצים
+1. Eclipse ADT → חבילה ב-namespace הארגוני (למשל `/ILG/MM_GREEN_PATH`,
+   לפי קונבנציית abap-ilg) + Transport.
+2. יצירת שלושה Data Definitions **לפי הסדר**: `/ILG/I_MM_Gp_Qmma_Status`,
+   `/ILG/I_MM_Gp_Clearing`, ואז `/ILG/I_MM_Green_Track` — הדבקת תוכן הקבצים
    מ-`src/cds/`.
 3. אקטיבציה (Ctrl+F3) לפי אותו סדר.
-4. Data Preview (F8) על `ZC_MM_GREENTRACK` מול סט מוכר.
+4. Data Preview (F8) על `/ILG/I_MM_Green_Track` מול סט מוכר.
 5. בדיקות קבלה (סעיף 9) → שחרור Transport ל-QA.
 
 ## 9. בדיקות קבלה
