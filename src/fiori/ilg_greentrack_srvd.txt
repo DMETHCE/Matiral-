@@ -1,0 +1,13 @@
+Service Definition  (ADT: New > Other > Business Services > Service Definition)
+שם:  /ILG/GREENTRACK
+------------------------------------------------------------------
+@EndUserText.label: 'Green Path ALP Service'
+define service /ILG/GREENTRACK {
+  expose /ILG/IMMGreenAlp as GreenTrack;
+}
+------------------------------------------------------------------
+Service Binding  (ADT: New > Business Services > Service Binding)
+שם:            /ILG/UI_GREENTRACK_V2
+Binding Type:  OData V2 - UI
+Service Def.:  /ILG/GREENTRACK
+לאחר יצירה: כפתור Publish (במסך ה-Binding). ה-URL יופיע במסך.
