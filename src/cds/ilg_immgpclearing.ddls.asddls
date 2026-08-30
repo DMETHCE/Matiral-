@@ -10,7 +10,7 @@
  * MAX( )          - דטרמיניסטי; בסילוק במספר מסמכים AUGBL/AUGDT עלולים
  *                   להגיע משורות שונות (ראו סעיף 11 באפיון).
  */
-define view entity /ILG/I_MM_Gp_Clearing
+define view entity /ILG/IMMGpClearing
   as select from acdoca
 {
   key rbukrs        as Bukrs,

@@ -13,9 +13,9 @@
 
 | אובייקט | קובץ | תפקיד |
 |---------|------|--------|
-| `/ILG/I_MM_Gp_Qmma_Status` | `src/cds/ilg_i_mm_gp_qmma_status.ddls.asddls` | דגלי קודים 50/60/70/80 לכל QMNUM מ-QMMA (`MNGRP='ZPU'`, ללא פעילויות שנמחקו) |
-| `/ILG/I_MM_Gp_Clearing` | `src/cds/ilg_i_mm_gp_clearing.ddls.asddls` | תשלום בפועל מ-ACDOCA: שורות ספק שסולקו במסמך תשלום ('2%'), ledger מוביל |
-| `/ILG/I_MM_Green_Track` | `src/cds/ilg_i_mm_green_track.ddls.asddls` | ה-View הראשי: חיבור הכל + עץ ההחלטות |
+| `/ILG/IMMGpQmmaStatus` | `src/cds/ilg_immgpqmmastatus.ddls.asddls` | דגלי קודים 50/60/70/80 לכל QMNUM מ-QMMA (`MNGRP='ZPU'`, ללא פעילויות שנמחקו) |
+| `/ILG/IMMGpClearing` | `src/cds/ilg_immgpclearing.ddls.asddls` | תשלום בפועל מ-ACDOCA: שורות ספק שסולקו במסמך תשלום ('2%'), ledger מוביל |
+| `/ILG/IMMGreenTrack` | `src/cds/ilg_immgreentrack.ddls.asddls` | ה-View הראשי: חיבור הכל + עץ ההחלטות |
 
 **דרישת מערכת:** S/4HANA 2020 ומעלה (`define view entity`, ביטויים בתנאי
 `ON`) — אושר על ידי הלקוח.
@@ -27,12 +27,12 @@
 | מקור | Alias | קישור | הערה |
 |------|-------|--------|------|
 | `/ILG/MM_GRPO_DET` | `grpo` | בסיס; מפתח `MANDT+QMNUM` — שורה אחת לסט | מבנה אומת מול צילום SE11, 26.08.2026 |
-| `/ILG/I_MM_Gp_Qmma_Status` | `stat` | `qmnum = grpo.qmnum` | |
+| `/ILG/IMMGpQmmaStatus` | `stat` | `qmnum = grpo.qmnum` | |
 | `RBKP` | `inv` | `belnr = grpo.belnr, gjahr = grpo.gjahr` | מצב החשבונית הלוגיסטית: `RBSTAT` 5=נרשמה, 2=נמחקה |
 | `BKPF` | `fi` | `awkey = concat(belnr, gjahr)` + `awtyp='RMRP'` + `bukrs = inv.bukrs` | הצמדת קוד החברה מונעת כפילות ברישום חוצה-חברות |
 | `BKPF` | `rev` | מפתח מלא `bukrs = fi.bukrs, belnr = fi.stblg, gjahr = fi.stjah` כאשר `fi.stblg <> ''` | מסמך הסטורנו; סיבת הביטול `STGRD` נקראת ממנו |
 | `T041CT` | `stx` | `stgrd = rev.stgrd`, `spras = $session.system_language` | טקסט סיבת הביטול (`TXT40`) |
-| `/ILG/I_MM_Gp_Clearing` | `clr` | `bukrs/belnr/gjahr = fi.*` | |
+| `/ILG/IMMGpClearing` | `clr` | `bukrs/belnr/gjahr = fi.*` | |
 
 לאחר תיקוני הביקורת כל קישור הוא לכל היותר 1:1 — ה-View מחזיר **בדיוק
 שורה אחת לכל QMNUM**.
@@ -139,11 +139,11 @@
 
 1. Eclipse ADT → חבילה ב-namespace הארגוני (למשל `/ILG/MM_GREEN_PATH`,
    לפי קונבנציית abap-ilg) + Transport.
-2. יצירת שלושה Data Definitions **לפי הסדר**: `/ILG/I_MM_Gp_Qmma_Status`,
-   `/ILG/I_MM_Gp_Clearing`, ואז `/ILG/I_MM_Green_Track` — הדבקת תוכן הקבצים
+2. יצירת שלושה Data Definitions **לפי הסדר**: `/ILG/IMMGpQmmaStatus`,
+   `/ILG/IMMGpClearing`, ואז `/ILG/IMMGreenTrack` — הדבקת תוכן הקבצים
    מ-`src/cds/`.
 3. אקטיבציה (Ctrl+F3) לפי אותו סדר.
-4. Data Preview (F8) על `/ILG/I_MM_Green_Track` מול סט מוכר.
+4. Data Preview (F8) על `/ILG/IMMGreenTrack` מול סט מוכר.
 5. בדיקות קבלה (סעיף 9) → שחרור Transport ל-QA.
 
 ## 9. בדיקות קבלה

@@ -109,15 +109,15 @@ body.push(new Paragraph({ children: [new PageBreak()] }));
 body.push(H("4", "תיאור טכני מפורט", 36));
 body.push(H("4.2", "יצירת CDS Views חדשים לטובת דוח הבקרה המפצה למסלול הירוק", 30));
 body.push(tableOf([3200, 5826], [ new TableRow({ children: [
-  C("/ILG/I_MM_Green_Track", { w: 5826, mono: true, center: true }),
+  C("/ILG/IMMGreenTrack", { w: 5826, mono: true, center: true }),
   C("שם ה-View הראשי", { w: 3200, fill: GREY, bold: true }) ] }) ]));
 body.push(spc(60));
 body.push(tableOf([3200, 5826], [ new TableRow({ children: [
-  C("/ILG/I_MM_Gp_Qmma_Status", { w: 5826, mono: true, center: true }),
+  C("/ILG/IMMGpQmmaStatus", { w: 5826, mono: true, center: true }),
   C("View עזר - קודי סטטוס", { w: 3200, fill: GREY, bold: true }) ] }) ]));
 body.push(spc(60));
 body.push(tableOf([3200, 5826], [ new TableRow({ children: [
-  C("/ILG/I_MM_Gp_Clearing", { w: 5826, mono: true, center: true }),
+  C("/ILG/IMMGpClearing", { w: 5826, mono: true, center: true }),
   C("View עזר - תשלומים", { w: 3200, fill: GREY, bold: true }) ] }) ]));
 body.push(spc(120));
 body.push(bullet("❖", [new TextRun({ text: "אובייקט מסוג ", bold: true }), tok("CDS View Entity"),
@@ -163,8 +163,8 @@ body.push(paramTbl(["שדה", "סוג שדה", "אורך", "חובה", "תיאו
 // ===== 5. =====
 body.push(H("5", "מהלך ה-View:", 30));
 
-body.push(H("5.1", "תחילה יש לאסוף עבור כל סט את קודי הסטטוס מטבלת QMMA (ב-View העזר /ILG/I_MM_Gp_Qmma_Status), באופן הבא:", 24));
-body.push(mapTbl("שם שדה ב /ILG/I_MM_Gp_Qmma_Status", "אופן האכלוס", [
+body.push(H("5.1", "תחילה יש לאסוף עבור כל סט את קודי הסטטוס מטבלת QMMA (ב-View העזר /ILG/IMMGpQmmaStatus), באופן הבא:", 24));
+body.push(mapTbl("שם שדה ב /ILG/IMMGpQmmaStatus", "אופן האכלוס", [
   ["Qmnum", "QMMA-QMNUM"],
   ["Has50", "'X' במידה וקיימת שורה עם MNCOD = '50'"],
   ["Has60", "'X' במידה וקיימת שורה עם MNCOD = '60'"],
@@ -200,7 +200,7 @@ body.push(mapTbl("שם שדה ב BKPF ( מסמך הסטורנו )", "אופן ה
 body.push(P("אין לאתר את מסמך הסטורנו דרך AWREF_REV - שדה זה מאוכלס על מסמך הסטורנו ולא על המקור. את קוד הסיבה ( STGRD ) יש לתרגם לטקסט מטבלת T041CT ( TXT40 ) בשפת המשתמש."));
 body.push(spc());
 
-body.push(H("5.5", "בנוסף יש לבדוק האם החשבונית שולמה בפועל ( ב-View העזר /ILG/I_MM_Gp_Clearing מעל ACDOCA ), באופן הבא:", 24));
+body.push(H("5.5", "בנוסף יש לבדוק האם החשבונית שולמה בפועל ( ב-View העזר /ILG/IMMGpClearing מעל ACDOCA ), באופן הבא:", 24));
 body.push(mapTbl("שם שדה ב ACDOCA", "אופן האכלוס", [
   ["RLDNR", "'0L' ( ledger מוביל )"],
   ["RBUKRS", "BKPF-BUKRS"],
@@ -228,7 +228,7 @@ body.push(spc());
 // ===== 6. =====
 body.push(H("6", "לאחר מכן יש לאכלס את עמודות הפלט של ה-View.", 26));
 body.push(H("6.1", "יש למלא את עמודות הפלט באופן הבא:", 24));
-body.push(mapTbl("שם שדה ב /ILG/I_MM_Green_Track", "אופן האכלוס", [
+body.push(mapTbl("שם שדה ב /ILG/IMMGreenTrack", "אופן האכלוס", [
   ["Qmnum", "/ILG/MM_GRPO_DET-QMNUM"],
   ["LogicalStatusCode", "תוצאת עץ ההחלטות ( 5.6 )"],
   ["LogicalStatus", "הטקסט העברי המקביל לקוד"],

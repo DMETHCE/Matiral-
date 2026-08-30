@@ -1,7 +1,7 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Green Path Tracking - live status per notification'
 /*
- * /ILG/I_MM_Green_Track
+ * /ILG/IMMGreenTrack
  * ---------------------
  * View חי למעקב מסלול ירוק / בקרה מפצה - מחליף את התוכנית
  * ZMM_PROCESS_GREEN_PATH ואת טבלת היעד המתוכננת (שלא הוקמה).
@@ -19,11 +19,11 @@
  * דרישה: S/4HANA 2020 ומעלה (view entity + ביטויים בתנאי ON).
  * כל שמות השדות אומתו מול צילומי SE11 מהמערכת.
  */
-define view entity /ILG/I_MM_Green_Track
+define view entity /ILG/IMMGreenTrack
   as select from /ilg/mm_grpo_det as grpo
 
     // קודי הסטטוס של הסט (קבוצת ZPU, ללא פעילויות שנמחקו)
-    left outer join /ILG/I_MM_Gp_Qmma_Status as stat
+    left outer join /ILG/IMMGpQmmaStatus as stat
       on stat.Qmnum = grpo.qmnum
 
     // מצב החשבונית הלוגיסטית (מפתח BELNR+GJAHR)
@@ -53,7 +53,7 @@ define view entity /ILG/I_MM_Green_Track
       and stx.spras = $session.system_language
 
     // תשלום בפועל - סילוק שורת ספק במסמך תשלום
-    left outer join /ILG/I_MM_Gp_Clearing as clr
+    left outer join /ILG/IMMGpClearing as clr
       on  clr.Bukrs = fi.bukrs
       and clr.Belnr = fi.belnr
       and clr.Gjahr = fi.gjahr

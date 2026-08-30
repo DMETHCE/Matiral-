@@ -7,7 +7,7 @@
  * MNGRP = 'ZPU'  - קבוצת הפעילויות של המסלול הירוק (אומת מול VIQMMA).
  * KZLOESCH = ''  - פעילות שסומנה למחיקה בהודעה אינה נספרת.
  */
-define view entity /ILG/I_MM_Gp_Qmma_Status
+define view entity /ILG/IMMGpQmmaStatus
   as select from qmma
 {
   key qmnum                                            as Qmnum,
