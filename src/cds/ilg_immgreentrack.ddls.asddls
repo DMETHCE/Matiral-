@@ -91,7 +91,7 @@ define view entity /ILG/IMMGreenTrack
             end
           when stat.Has50 = 'X'                          then '06' // נדחה על ידי דורש
           else                                                '99' // בתהליך
-        end as abap.char(2) )                                as LogicalStatusCode,
+        end as /ilg/mm_gp_status_code )                      as LogicalStatusCode,
 
       // ---------------------------------------------------------------
       // עץ ההחלטות - טקסט (ניסוחי האפיון העסקי)
@@ -124,7 +124,7 @@ define view entity /ILG/IMMGreenTrack
           when stat.Has50 = 'X'
             then 'נדחה על ידי דורש'
           else 'בתהליך'
-        end as abap.char(40) )                               as LogicalStatus,
+        end as /ilg/mm_gp_status_txt )                       as LogicalStatus,
 
       // אינדיקטור בקרה ידנית (MONITOR_INDICATOR או חשבונית מעל 10 אלש"ח)
       @EndUserText.label: 'בקרה ידנית'
@@ -132,7 +132,7 @@ define view entity /ILG/IMMGreenTrack
         case
           when grpo.monitor_indicator <> '' or grpo.extra_vlue_ind <> ''
             then 'X' else ''
-        end as abap.char(1) )                                as IsMonitor,
+        end as /ilg/mm_gp_monitor )                          as IsMonitor,
 
       @EndUserText.label: 'מסמך קבלת טובין'
       grpo.mblnr                                             as Mblnr,
@@ -143,7 +143,7 @@ define view entity /ILG/IMMGreenTrack
         case
           when grpo.mm_gr_doc_ind = '2' or grpo.mm_gr_doc_ind = '4'
             then 'X' else ''
-        end as abap.char(1) )                                as MblnrHandledManually,
+        end as /ilg/mm_gp_gr_manual )                        as MblnrHandledManually,
 
       @EndUserText.label: 'חשבונית לוגיסטית'
       grpo.belnr                                             as BelnrMm,
@@ -167,7 +167,7 @@ define view entity /ILG/IMMGreenTrack
       cast(
         case when clr.Augbl is not null
           then 'X' else ''
-        end as abap.char(1) )                                as IsPaid,
+        end as /ilg/mm_gp_paid )                             as IsPaid,
       @EndUserText.label: 'מסמך תשלום'
       clr.Augbl                                              as Augbl,
       @EndUserText.label: 'תאריך תשלום'
@@ -178,19 +178,19 @@ define view entity /ILG/IMMGreenTrack
       cast(
         case when fi.xreversed = 'X'
           then 'X' else ''
-        end as abap.char(1) )                                as IsReversed,
+        end as /ilg/mm_gp_reversed )                         as IsReversed,
 
       // סיבת ביטול - עמודות רוחביות; COALESCE מבטיח ריק ולא NULL
       @EndUserText.label: 'סיבת סטורנו'
-      coalesce(
+      cast( coalesce(
         case when fi.xreversed = 'X' then rev.stgrd else '' end,
-        cast( '' as abap.char(2) ) )                         as Stgrd,
+        cast( '' as abap.char(2) ) ) as stgrd )              as Stgrd,
       @EndUserText.label: 'תיאור סיבת סטורנו'
-      coalesce(
+      cast( coalesce(
         case when fi.xreversed = 'X' then stx.txt40 else '' end,
-        cast( '' as abap.char(40) ) )                        as StgrdTxt,
+        cast( '' as abap.char(40) ) ) as /ilg/mm_gp_stgrd_txt ) as StgrdTxt,
 
       // תאריך השאילתה (View חי - אין "שעת עדכון")
       @EndUserText.label: 'תאריך שאילתה'
-      $session.system_date                                   as Aedat
+      cast( $session.system_date as aedat )                  as Aedat
 }
