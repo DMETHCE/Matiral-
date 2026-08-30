@@ -2,7 +2,7 @@
 @EndUserText.label: 'Green Path Tracking - live status per notification'
 /*
  * /ILG/IMMGreenTrack
- * ---------------------
+ * ------------------
  * View חי למעקב מסלול ירוק / בקרה מפצה - מחליף את התוכנית
  * ZMM_PROCESS_GREEN_PATH ואת טבלת היעד המתוכננת (שלא הוקמה).
  * האפיון העסקי גובר על התוכנית בכל סתירה; פירוט מלא, סטטוס אימות
@@ -59,6 +59,7 @@ define view entity /ILG/IMMGreenTrack
       and clr.Gjahr = fi.gjahr
 
 {
+      @EndUserText.label: 'מספר סט (הודעה)'
   key grpo.qmnum                                            as Qmnum,
 
       // ---------------------------------------------------------------
@@ -66,6 +67,7 @@ define view entity /ILG/IMMGreenTrack
       // בוטלה = XREVERSED='X' או RBSTAT='2'
       // הושלמו מסמכי המשך = MBLNR + BELNR מלאים וגם RBSTAT='5'
       // ---------------------------------------------------------------
+      @EndUserText.label: 'קוד סטטוס לוגי'
       cast(
         case
           when stat.Has50 = 'X' and stat.Has60 = 'X' then
@@ -94,6 +96,7 @@ define view entity /ILG/IMMGreenTrack
       // ---------------------------------------------------------------
       // עץ ההחלטות - טקסט (ניסוחי האפיון העסקי)
       // ---------------------------------------------------------------
+      @EndUserText.label: 'סטטוס לוגי'
       cast(
         case
           when stat.Has50 = 'X' and stat.Has60 = 'X' then
@@ -124,54 +127,70 @@ define view entity /ILG/IMMGreenTrack
         end as abap.char(40) )                               as LogicalStatus,
 
       // אינדיקטור בקרה ידנית (MONITOR_INDICATOR או חשבונית מעל 10 אלש"ח)
+      @EndUserText.label: 'בקרה ידנית'
       cast(
         case
           when grpo.monitor_indicator <> '' or grpo.extra_vlue_ind <> ''
             then 'X' else ''
         end as abap.char(1) )                                as IsMonitor,
 
+      @EndUserText.label: 'מסמך קבלת טובין'
       grpo.mblnr                                             as Mblnr,
 
       // טובין ידני (2 = מסמך אחד על כל הכמות, 4 = מספר מסמכים)
+      @EndUserText.label: 'טובין נוצר ידנית'
       cast(
         case
           when grpo.mm_gr_doc_ind = '2' or grpo.mm_gr_doc_ind = '4'
             then 'X' else ''
         end as abap.char(1) )                                as MblnrHandledManually,
 
+      @EndUserText.label: 'חשבונית לוגיסטית'
       grpo.belnr                                             as BelnrMm,
+      @EndUserText.label: 'שנת כספים - חשבונית'
       grpo.gjahr                                             as GjahrMm,
 
       // מצב החשבונית הלוגיסטית (5=נרשמה, 2=נמחקה, ריק=אין חשבונית)
+      @EndUserText.label: 'מצב חשבונית'
       inv.rbstat                                             as Rbstat,
 
       // פרטי המסמך הפיננסי (ריק/NULL כשלא נמצא)
+      @EndUserText.label: 'קוד חברה'
       fi.bukrs                                               as Bukrs,
+      @EndUserText.label: 'מסמך פיננסי'
       fi.belnr                                               as BelnrFi,
+      @EndUserText.label: 'שנת כספים - פיננסי'
       fi.gjahr                                               as GjahrFi,
 
       // תשלום בפועל - אינדיקטור בוליאני רוחבי (החלטת דיון 4/8)
+      @EndUserText.label: 'שולם בפועל'
       cast(
         case when clr.Augbl is not null
           then 'X' else ''
         end as abap.char(1) )                                as IsPaid,
+      @EndUserText.label: 'מסמך תשלום'
       clr.Augbl                                              as Augbl,
+      @EndUserText.label: 'תאריך תשלום'
       clr.Augdt                                              as Augdt,
 
       // סטורנו פיננסי; חשבונית שנמחקה נראית דרך Rbstat = '2'
+      @EndUserText.label: 'בוצע סטורנו'
       cast(
         case when fi.xreversed = 'X'
           then 'X' else ''
         end as abap.char(1) )                                as IsReversed,
 
       // סיבת ביטול - עמודות רוחביות; COALESCE מבטיח ריק ולא NULL
+      @EndUserText.label: 'סיבת סטורנו'
       coalesce(
         case when fi.xreversed = 'X' then rev.stgrd else '' end,
         cast( '' as abap.char(2) ) )                         as Stgrd,
+      @EndUserText.label: 'תיאור סיבת סטורנו'
       coalesce(
         case when fi.xreversed = 'X' then stx.txt40 else '' end,
         cast( '' as abap.char(40) ) )                        as StgrdTxt,
 
       // תאריך השאילתה (View חי - אין "שעת עדכון")
+      @EndUserText.label: 'תאריך שאילתה'
       $session.system_date                                   as Aedat
 }

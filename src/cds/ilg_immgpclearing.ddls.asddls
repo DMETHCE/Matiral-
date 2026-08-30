@@ -13,11 +13,16 @@
 define view entity /ILG/IMMGpClearing
   as select from acdoca
 {
+      @EndUserText.label: 'קוד חברה'
   key rbukrs        as Bukrs,
+      @EndUserText.label: 'מסמך פיננסי'
   key belnr         as Belnr,
+      @EndUserText.label: 'שנת כספים'
   key gjahr         as Gjahr,
 
+      @EndUserText.label: 'מסמך תשלום'
       max( augbl )  as Augbl,
+      @EndUserText.label: 'תאריך תשלום'
       max( augdt )  as Augdt
 }
 where
