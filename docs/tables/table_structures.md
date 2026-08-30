@@ -58,7 +58,7 @@
 KLAKZ, PSTER/PETER, INDTX, KZMLA, MNGFA, PSTUR/PETUR, AEZEIT, QMANUM,
 AUTKZ, KZACTIONBOX, FUNKTION, CHANGEDDATETIME, QMMA_INCL_EEW_PS (include).
 
-## ✅ RBKP — כותרת מסמך קבלת חשבונית (צולם היום, 3 מסכים; 228 שדות)
+## ✅ RBKP — כותרת מסמך קבלת חשבונית (צולם במלואו — כל 228 השדות)
 
 שדות רלוונטיים ל-CDS:
 
@@ -77,6 +77,11 @@ AUTKZ, KZACTIONBOX, FUNKTION, CHANGEDDATETIME, QMMA_INCL_EEW_PS (include).
 ערכי RBSTAT (מהאפיון העסקי): 1=לאישור רקע, 2=נמחק, 3=עם שגיאות,
 4=נכון (לא מושלם), 5=נרשם, A=בהמתנה, B=ממתין ומושלם, C=ממתין ומוחזק,
 D=מוזן ומוחזק, E=ממתין ומשוחרר.
+
+נצפו גם ה-Appends (לא בשימוש ה-CDS): RBKP_1TIME (ספק חד-פעמי),
+WRF_PREPAY (תשלום מראש), FAC_BKPF_EXT_GLO / GLO_REF (סימוכין גלובליים),
+ATL/ILE (Annexation), **`/ILG/RBKP/` — Append לקוח עם `PUR_CODE`
+("קוד מהות תשלום", CHAR10)**, J_1IG, SAFM.
 
 ## ✅ VIQMMA (צולם 26.08.2026)
 
