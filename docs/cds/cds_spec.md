@@ -115,10 +115,15 @@
 - `QMMA` — `MNGRP` (CHAR8), `MNCOD` (CHAR4), `KZLOESCH` — קיימים כמונח;
   מפתח `MANDT+QMNUM+MANUM` (כמה פעילויות להודעה — האגרגציה הכרחית).
 - `RBKP` — מפתח `BELNR+GJAHR`, `BUKRS`, `RBSTAT` — קיימים כמונח.
+- `BKPF` — מפתח, `AWKEY`, `AWTYP`, `STBLG`, `STJAH`, `STGRD`,
+  **וגם `XREVERSED`** (אלמנט CO_STOKZ) — קיים ב-S/4, בניגוד לקביעת סוכן
+  הביקורת; זיהוי הביטול חזר ל-`XREVERSED='X'` כלשון האפיון, והקישור
+  למסמך הסטורנו נשאר דרך `STBLG`/`STJAH` (כי `AWREF_REV` מאוכלס על
+  מסמך הסטורנו, לא על המקור).
 
-**ממתין לצילום (מבוסס הגדרות סטנדרט + סוכני ביקורת):** `BKPF`
-(AWKEY/AWTYP/STBLG/STJAH/STGRD), `T041CT` (TXT40), `ACDOCA`
-(RLDNR/RBUKRS/KOART/AUGBL/AUGDT) + שורת תשלום לדוגמה ('2%', ledger).
+**ממתין לצילום (מבוסס הגדרות סטנדרט + סוכני ביקורת):** `T041CT` (TXT40),
+`ACDOCA` (RLDNR/RBUKRS/KOART/AUGBL/AUGDT) + שורת תשלום לדוגמה ('2%',
+ledger).
 **אישורי לקוח:** S/4HANA 2020+; `AWTYP='RMRP'`; טבלת יעד לא תוקם;
 המסמך גובר על התוכנית.
 

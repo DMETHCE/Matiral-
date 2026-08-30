@@ -87,10 +87,36 @@ ATL/ILE (Annexation), **`/ILG/RBKP/` — Append לקוח עם `PUR_CODE`
 
 View תצוגה מעל QMMA; אישר `MNGRP = 'ZPU'` כקבוצת הקודים של המסלול הירוק.
 
-## ⏳ BKPF — כותרת מסמך פיננסי (ממתין לצילום)
+## ✅ BKPF — כותרת מסמך פיננסי (צולם במלואו — כל 210 השדות; כולל Append לקוח /ILG/ADD_HEADER)
 
-שדות שה-CDS משתמש בהם (לפי הגדרות סטנדרט): BUKRS, BELNR, GJAHR (מפתח),
-AWKEY, AWTYP, **STBLG, STJAH** (מסמך הסטורנו — קריטי לאימות), STGRD.
+| שדה | אלמנט נתונים | סוג | אורך | מפתח | שימוש ב-CDS |
+|------|---------------|-----|------|------|--------------|
+| MANDT | MANDT | CLNT | 3 | ✔ | |
+| BUKRS | BUKRS | CHAR | 4 | ✔ | ✔ הצמדה ל-RBKP.BUKRS |
+| BELNR | BELNR_D | CHAR | 10 | ✔ | ✔ |
+| GJAHR | GJAHR | NUMC | 4 | ✔ | ✔ |
+| STBLG | STBLG | CHAR | 10 | | ✔ מסמך סטורנו — זיהוי "בוטלה" + קישור rev |
+| STJAH | STJAH | NUMC | 4 | | ✔ שנת מסמך הסטורנו |
+| AWTYP | AWTYP | CHAR | 5 | | ✔ סינון 'RMRP' |
+| AWKEY | AWKEY | CHAR | 20 | | ✔ קישור מהחשבונית הלוגיסטית |
+| STGRD | STGRD | CHAR | 2 | | ✔ סיבת הסטורנו (נקראת ממסמך הסטורנו) |
+| **XREVERSED** | CO_STOKZ | CHAR | 1 | | ✔ "סמן: בוצע סטורנו למסמך" — זיהוי "בוטלה" (כלשון האפיון) |
+| XREVERSING | CO_STFLG | CHAR | 1 | | לא בשימוש (מזהה את מסמך הסטורנו עצמו) |
+| AWREF_REV | AWREF_REV | CHAR | 10 | | לא בשימוש — מאוכלס על מסמך הסטורנו, לא על המקור (הבאג הלוגי בתוכנית); הקישור נעשה דרך STBLG |
+| AWORG_REV | AWORG_REV | CHAR | 10 | | לא בשימוש (כנ"ל) |
+| XSTOV | XSTOV | CHAR | 1 | | לא בשימוש (רק "מסומן לסטורנו", לא ביטול בפועל) |
+| XREVERSAL | XREVERSAL | CHAR | 1 | | לא בשימוש |
+| RLDNR | FINS_LEDGER | CHAR | 2 | | לא בשימוש (ledger) |
+
+נצפו גם: DBBLG, BSTAT, XNETB, XRUEB, STODT, PPNAM/PPDATE, XREF1/2_HD,
+EXT_GLO, FDTR ועוד.
+
+**תיקון ממצא ביקורת (26.08.2026):** סוכן ה-CDS קבע ש-XREVERSED /
+AWREF_REV / AWORG_REV אינם קיימים ב-BKPF — צילום SE11 הוכיח שהם **כן
+קיימים** ב-S/4 של הלקוח. לפיכך שגיאת קומפילציה #11 בוטלה, וזיהוי הביטול
+ב-CDS חזר ל-`XREVERSED = 'X'` כלשון האפיון. מה שנשאר בתוקף: הקישור
+למסמך הסטורנו נעשה דרך `STBLG`/`STJAH` (מפתח מלא) ולא דרך `AWREF_REV`,
+שמאוכלס על מסמך הסטורנו ולא על המקור.
 
 ## ⏳ T041CT — טקסטים לסיבות סטורנו (ממתין לצילום)
 

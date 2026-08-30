@@ -24,7 +24,7 @@
 | 3 | `TYPES ty_target` | `logical_status TYPE string` — `STRING` אינו חוקי כעמודה רגילה בטבלה שקופה; ה-TYPE כלל אינו בשימוש |
 | 4 | `TEXT-001` | אלמנט טקסט לא מוגדר (אזהרה) |
 | 10 | `SELECT ... mn_gr_doc_ind FROM /ilg/mm_grpo_det` | בטבלה השדה נקרא `MM_GR_DOC_IND` (אומת מול צילום SE11); `mn_gr_doc_ind` (עם N) אינו קיים. השגיאה מקורה במסמך האפיון העסקי שכתב את השם כך |
-| 11 | `SELECT ... xreversed, awref_rev, aworg_rev FROM bkpf` | `XREVERSED` / `AWREF_REV` / `AWORG_REV` הם שדות **ACDOCA**, לא BKPF. שדות הסטורנו ב-BKPF הם `STBLG` / `STJAH` / `STGRD`. גם כאן המקור הוא האפיון העסקי שהפנה ל-BKPF |
+| ~~11~~ | ~~`SELECT ... xreversed, awref_rev, aworg_rev FROM bkpf`~~ | **בוטלה** — צילום SE11 (26.08.2026) הוכיח שהשדות כן קיימים ב-BKPF של S/4 (CO_STOKZ, AWREF_REV, AWORG_REV). נותר הבאג הלוגי #13 בלבד |
 | 12 | `SELECT stgrd, txt20 FROM t041ct` | ב-`T041CT` אין `TXT20` — שדה הטקסט הוא `TXT40` |
 
 (המספור 1–4, 10–12 תואם את המספור ההיסטורי שבו הממצאים נאספו בשלבים.)

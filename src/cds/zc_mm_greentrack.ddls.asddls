@@ -14,10 +14,10 @@
  *   /ILG/MM_GRPO_DET (הסט) -> QMMA (קודי סטטוס, MNGRP='ZPU')
  *   -> RBKP (מצב החשבונית הלוגיסטית, RBSTAT: 5=נרשמה, 2=נמחקה)
  *   -> BKPF דרך AWKEY=BELNR+GJAHR + AWTYP='RMRP' (מסמך פיננסי)
- *   -> זיהוי סטורנו: STBLG מלא; מסמך הסטורנו נקרא לפי BUKRS+STBLG+STJAH
- *      (סיבת הביטול STGRD על מסמך הסטורנו; האפיון והתוכנית הפנו
- *      ל-XREVERSED/AWREF_REV/AWORG_REV שהם שדות ACDOCA ולא BKPF -
- *      תוקן לקישור המפתח המלא, ממצא סוכני הביקורת 26.08.2026)
+ *   -> זיהוי סטורנו: XREVERSED = 'X' (אומת בצילום SE11 שהשדה קיים
+ *      ב-BKPF, אלמנט CO_STOKZ - כלשון האפיון העסקי); מסמך הסטורנו
+ *      נקרא לפי המפתח המלא BUKRS+STBLG+STJAH ולא דרך AWREF_REV -
+ *      AWREF_REV מאוכלס על מסמך הסטורנו ולא על המקור (ממצא ביקורת)
  *   -> T041CT (טקסט סיבת הביטול, TXT40) ; ACDOCA (תשלום, AUGBL מתחיל ב-2)
  *
  * דרישות מערכת: S/4HANA 2020 ומעלה (view entity + ביטויים בתנאי ON) -
@@ -72,20 +72,20 @@ define view entity ZC_MM_GREENTRACK
 
       // ---------------------------------------------------------------
       // עץ ההחלטות לפי האפיון העסקי - קוד סטטוס
-      // בוטלה = סטורנו פיננסי (STBLG מלא) או חשבונית שנמחקה (RBSTAT='2')
+      // בוטלה = סטורנו פיננסי (XREVERSED='X') או חשבונית שנמחקה (RBSTAT='2')
       // "הושלם" מחייב מסמכי המשך: MBLNR + BELNR + חשבונית רשומה (RBSTAT='5')
       // ---------------------------------------------------------------
       cast(
         case
           when stat.has_50 = 'X' and stat.has_60 = 'X' then
             case
-              when fi.stblg <> '' or inv.rbstat = '2'
+              when fi.xreversed = 'X' or inv.rbstat = '2'
                 or clr.augbl is null                     then '01' // נדחה לאחר אישור ובוטל
               else                                            '02' // נדחה לאחר אישור ושולם
             end
           when stat.has_60 = 'X' then
             case
-              when fi.stblg <> '' or inv.rbstat = '2'    then '03' // נדחה לאחר אישור דורש
+              when fi.xreversed = 'X' or inv.rbstat = '2'    then '03' // נדחה לאחר אישור דורש
               when grpo.mblnr <> '' and grpo.belnr <> ''
                 and inv.rbstat = '5' then
                 case
@@ -107,14 +107,14 @@ define view entity ZC_MM_GREENTRACK
         case
           when stat.has_50 = 'X' and stat.has_60 = 'X' then
             case
-              when fi.stblg <> '' or inv.rbstat = '2'
+              when fi.xreversed = 'X' or inv.rbstat = '2'
                 or clr.augbl is null
                 then 'נדחה לאחר אישור ובוטל'
               else 'נדחה לאחר אישור ושולם'
             end
           when stat.has_60 = 'X' then
             case
-              when fi.stblg <> '' or inv.rbstat = '2'
+              when fi.xreversed = 'X' or inv.rbstat = '2'
                 then 'נדחה לאחר אישור דורש'
               when grpo.mblnr <> '' and grpo.belnr <> ''
                 and inv.rbstat = '5' then
@@ -171,17 +171,17 @@ define view entity ZC_MM_GREENTRACK
 
       // סטורנו פיננסי; חשבונית שנמחקה נראית דרך rbstat = '2'
       cast(
-        case when fi.stblg <> ''
+        case when fi.xreversed = 'X'
           then 'X' else ''
         end as abap.char(1) )                                as is_reversed,
 
       // סיבת הביטול - עמודה רוחבית (החלטת דיון 4/8), קיימת רק לסטורנו
       // פיננסי; COALESCE מבטיח ריק (ולא NULL) גם כשהקישור לא מצא שורה
       coalesce(
-        case when fi.stblg <> '' then rev.stgrd else '' end,
+        case when fi.xreversed = 'X' then rev.stgrd else '' end,
         cast( '' as abap.char(2) ) )                         as stgrd,
       coalesce(
-        case when fi.stblg <> '' then stx.txt40 else '' end,
+        case when fi.xreversed = 'X' then stx.txt40 else '' end,
         cast( '' as abap.char(40) ) )                        as stgrd_txt,
 
       // תאריך השאילתה (במקור: sy-datum של ריצת ה-Batch)
