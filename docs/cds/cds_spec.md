@@ -108,11 +108,17 @@
 
 ## 7. סטטוס אימות
 
-**אומת מול צילומים (26.08.2026):** מבנה `/ILG/MM_GRPO_DET` המלא (מפתח,
-שמות, טיפוסים); קבוצת קודים `MNGRP='ZPU'` (צילום VIQMMA).
-**אומת מול הגדרות סטנדרט על ידי סוכני הביקורת:** QMMA, RBKP, BKPF,
-T041CT, ACDOCA. לוודאות מלאה ניתן לצלם ב-SE11: `BKPF` (STBLG/STJAH/STGRD),
-`T041CT` (TXT40), `QMMA` (KZLOESCH) — אופציונלי.
+**אומת מול צילומי SE11** (רישום מלא: `docs/tables/table_structures.md`):
+
+- `/ILG/MM_GRPO_DET` — מבנה מלא (מפתח, שמות, טיפוסים) + `MNGRP='ZPU'`
+  (צילום VIQMMA).
+- `QMMA` — `MNGRP` (CHAR8), `MNCOD` (CHAR4), `KZLOESCH` — קיימים כמונח;
+  מפתח `MANDT+QMNUM+MANUM` (כמה פעילויות להודעה — האגרגציה הכרחית).
+- `RBKP` — מפתח `BELNR+GJAHR`, `BUKRS`, `RBSTAT` — קיימים כמונח.
+
+**ממתין לצילום (מבוסס הגדרות סטנדרט + סוכני ביקורת):** `BKPF`
+(AWKEY/AWTYP/STBLG/STJAH/STGRD), `T041CT` (TXT40), `ACDOCA`
+(RLDNR/RBUKRS/KOART/AUGBL/AUGDT) + שורת תשלום לדוגמה ('2%', ledger).
 **אישורי לקוח:** S/4HANA 2020+; `AWTYP='RMRP'`; טבלת יעד לא תוקם;
 המסמך גובר על התוכנית.
 
