@@ -39,11 +39,11 @@ ENDFORM.
 FORM get_data.
 
   SELECT qmnum                AS qmnum,
-         logicalstatuscode    AS logical_status_code,
+         logicalstatuscode    AS status_code,
          logicalstatus        AS logical_status,
          ismonitor            AS is_monitor,
          mblnr                AS mblnr,
-         mblnrhandledmanually AS mblnr_handled_manually,
+         mblnrhandledmanually AS mblnr_manual,
          belnrmm              AS belnr_mm,
          gjahrmm              AS gjahr_mm,
          rbstat               AS rbstat,
