@@ -127,7 +127,7 @@ AWREF_REV / AWORG_REV אינם קיימים ב-BKPF — צילום SE11 הוכי
 | STGRD | STGRD | CHAR | 2 | ✔ | ✔ קישור מסיבת הסטורנו |
 | TXT40 | TXT40 | CHAR | 40 | | ✔ טקסט הסיבה. **אין TXT20** — אושרה שגיאת קומפילציה #12 בתוכנית |
 
-## 🟡 ACDOCA — היומן האוניברסלי (צולם חלקית — 121/553 שדות)
+## ✅ ACDOCA — היומן האוניברסלי (צולם — כל שדות ה-CDS אומתו)
 
 | שדה | אלמנט נתונים | סוג | אורך | מפתח | שימוש ב-CDS |
 |------|---------------|-----|------|------|--------------|
@@ -137,9 +137,16 @@ AWREF_REV / AWORG_REV אינם קיימים ב-BKPF — צילום SE11 הוכי
 | GJAHR | GJAHR | NUMC | 4 | ✔ | ✔ |
 | BELNR | BELNR_D | CHAR | 10 | ✔ | ✔ |
 | DOCLN | DOCLN6 | CHAR | 6 | ✔ | |
+| KOART | KOART | CHAR | 1 | | ✔ סינון `= 'K'` (שורת ספק) |
+| AUGDT | AUGDT | DATS | 8 | | ✔ תאריך סילוק (תשלום) |
+| AUGBL | AUGBL | CHAR | 10 | | ✔ מסמך סילוק — `LIKE '2%'` |
+| AUGGJ | AUGGJ | NUMC | 4 | | לא בשימוש (שנת הסילוק) |
+| XOPVW | XOPVW | CHAR | 1 | | לא בשימוש (ניהול פריטים פתוחים) |
 
 נצפו גם: XREVERSING/XREVERSED/XTRUEREV, AWTYP_REV/AWORG_REV/AWREF_REV
 (שדות הסטורנו של ACDOCA — מקור הבלבול באפיון), RACCT, KOSTL/PRCTR,
-מטבעות (TSL/WSL/HSL/KSL...), כמויות.
-**⏳ ממתין לאימות: `KOART`, `AUGBL`, `AUGDT` (בהמשך הטבלה — חיפוש AUGBL
-במשקפת). רצוי גם שורת SE16 של תשלום לאימות '2%' ו-ledger '0L'.**
+LIFNR/KUNNR/EBELN/MATNR (SUBLEDGER_SHARED), מטבעות, כמויות, נכסים (FAA),
+Material Ledger.
+
+**אימות נתונים שנותר (אופציונלי, לא חוסם):** שורת SE16 של תשלום בפועל —
+לוודא ש-`AUGBL` מתחיל ב-'2' ושה-ledger הפעיל הוא '0L'.
