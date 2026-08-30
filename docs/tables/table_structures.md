@@ -127,8 +127,19 @@ AWREF_REV / AWORG_REV אינם קיימים ב-BKPF — צילום SE11 הוכי
 | STGRD | STGRD | CHAR | 2 | ✔ | ✔ קישור מסיבת הסטורנו |
 | TXT40 | TXT40 | CHAR | 40 | | ✔ טקסט הסיבה. **אין TXT20** — אושרה שגיאת קומפילציה #12 בתוכנית |
 
-## ⏳ ACDOCA — היומן האוניברסלי (ממתין לצילום)
+## 🟡 ACDOCA — היומן האוניברסלי (צולם חלקית — 121/553 שדות)
 
-שדות: RLDNR, RBUKRS, GJAHR, BELNR (מפתח), KOART, AUGBL, AUGDT.
-בנוסף רצוי: שורת דוגמה של תשלום (SE16) לאימות ש-AUGBL מתחיל ב-'2'
-ושה-ledger המוביל הוא '0L'.
+| שדה | אלמנט נתונים | סוג | אורך | מפתח | שימוש ב-CDS |
+|------|---------------|-----|------|------|--------------|
+| RCLNT | MANDT | CLNT | 3 | ✔ | |
+| RLDNR | FINS_LEDGER | CHAR | 2 | ✔ | ✔ סינון `= '0L'` (ledger מוביל) |
+| RBUKRS | BUKRS | CHAR | 4 | ✔ | ✔ קוד חברה (בתוכנית נכתב BUKRS — שגיאה #2) |
+| GJAHR | GJAHR | NUMC | 4 | ✔ | ✔ |
+| BELNR | BELNR_D | CHAR | 10 | ✔ | ✔ |
+| DOCLN | DOCLN6 | CHAR | 6 | ✔ | |
+
+נצפו גם: XREVERSING/XREVERSED/XTRUEREV, AWTYP_REV/AWORG_REV/AWREF_REV
+(שדות הסטורנו של ACDOCA — מקור הבלבול באפיון), RACCT, KOSTL/PRCTR,
+מטבעות (TSL/WSL/HSL/KSL...), כמויות.
+**⏳ ממתין לאימות: `KOART`, `AUGBL`, `AUGDT` (בהמשך הטבלה — חיפוש AUGBL
+במשקפת). רצוי גם שורת SE16 של תשלום לאימות '2%' ו-ledger '0L'.**
