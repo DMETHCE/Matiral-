@@ -16,27 +16,27 @@
             <Annotations Target="xILGxIMMGREENALP_CDS.xILGxIMMGreenAlpType">
                 <Annotation Term="UI.KPI" Qualifier="TotalSets">
                     <Record>
-                        <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#SetsCount"/>
+                        <PropertyValue Property="DataPoint" Path="@UI.DataPoint#SetsCount"/>
                     </Record>
                 </Annotation>
                 <Annotation Term="UI.KPI" Qualifier="Paid">
                     <Record>
-                        <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#PaidCount"/>
+                        <PropertyValue Property="DataPoint" Path="@UI.DataPoint#PaidCount"/>
                     </Record>
                 </Annotation>
                 <Annotation Term="UI.KPI" Qualifier="Monitor">
                     <Record>
-                        <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#MonitorCount"/>
+                        <PropertyValue Property="DataPoint" Path="@UI.DataPoint#MonitorCount"/>
                     </Record>
                 </Annotation>
                 <Annotation Term="UI.KPI" Qualifier="Reversed">
                     <Record>
-                        <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#ReversedCount"/>
+                        <PropertyValue Property="DataPoint" Path="@UI.DataPoint#ReversedCount"/>
                     </Record>
                 </Annotation>
                 <Annotation Term="UI.KPI" Qualifier="OpenDocs">
                     <Record>
-                        <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#OpenDocsCount"/>
+                        <PropertyValue Property="DataPoint" Path="@UI.DataPoint#OpenDocsCount"/>
                     </Record>
                 </Annotation>
             </Annotations>
