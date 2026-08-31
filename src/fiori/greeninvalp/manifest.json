@@ -130,6 +130,7 @@
           "name": "sap.suite.ui.generic.template.AnalyticalListPage",
           "list": true,
           "settings": {
+            "qualifier": "Default",
             "condensedTableLayout": true,
             "showGoButtonOnFilterBar": true,
             "tableType": "AnalyticalTable",
