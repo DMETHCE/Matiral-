@@ -129,7 +129,7 @@
           "subTitle": "כלל הסטים במסלול הירוק",
           "entitySet": "xILGxIMMGREENALP",
           "dataPointAnnotationPath": "com.sap.vocabularies.UI.v1.DataPoint#SetsCount",
-          "chartAnnotationPath": "com.sap.vocabularies.UI.v1.Chart#StatusChart"
+          "chartAnnotationPath": "com.sap.vocabularies.UI.v1.Chart#OvpStatus"
         }
       },
       "card01_companyDonut": {
@@ -139,7 +139,7 @@
           "title": "סטים לפי חברה",
           "subTitle": "התפלגות לפי קוד חברה",
           "entitySet": "xILGxIMMGREENALP",
-          "chartAnnotationPath": "com.sap.vocabularies.UI.v1.Chart#VFBukrs"
+          "chartAnnotationPath": "com.sap.vocabularies.UI.v1.Chart#OvpBukrs"
         }
       },
       "card02_yearColumns": {
@@ -149,7 +149,7 @@
           "title": "סטים לפי שנת כספים",
           "subTitle": "התפלגות רב-שנתית",
           "entitySet": "xILGxIMMGREENALP",
-          "chartAnnotationPath": "com.sap.vocabularies.UI.v1.Chart#VFGjahr"
+          "chartAnnotationPath": "com.sap.vocabularies.UI.v1.Chart#OvpGjahr"
         }
       },
       "card03_openDocs": {
@@ -160,7 +160,7 @@
           "subTitle": "אושרו וטרם הושלמו המסמכים",
           "entitySet": "xILGxIMMGREENALP",
           "dataPointAnnotationPath": "com.sap.vocabularies.UI.v1.DataPoint#OpenDocsCount",
-          "chartAnnotationPath": "com.sap.vocabularies.UI.v1.Chart#VFStatus"
+          "chartAnnotationPath": "com.sap.vocabularies.UI.v1.Chart#OvpStatusBar"
         }
       },
       "card04_setsTable": {
