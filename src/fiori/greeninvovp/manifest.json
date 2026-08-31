@@ -93,7 +93,7 @@
         "preload": true,
         "settings": {
           "defaultBindingMode": "TwoWay",
-          "defaultCountMode": "Inline",
+          "defaultCountMode": "None",
           "refreshAfterChange": false,
           "metadataUrlParams": {
             "sap-value-list": "none"
