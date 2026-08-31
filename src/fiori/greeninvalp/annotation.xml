@@ -24,32 +24,62 @@
                 </Annotation>
                 <Annotation Term="UI.KPI" Qualifier="TotalSets">
                     <Record>
+                        <PropertyValue Property="ID" String="TotalSetsKPI"/>
                         <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#KpiAll"/>
                         <PropertyValue Property="DataPoint" Path="@UI.DataPoint#SetsCount"/>
+                        <PropertyValue Property="Detail">
+                            <Record Type="UI.KPIDetailType">
+                                <PropertyValue Property="DefaultPresentationVariant" Path="@UI.PresentationVariant#Default"/>
+                            </Record>
+                        </PropertyValue>
                     </Record>
                 </Annotation>
                 <Annotation Term="UI.KPI" Qualifier="Paid">
                     <Record>
+                        <PropertyValue Property="ID" String="PaidKPI"/>
                         <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#KpiAll"/>
                         <PropertyValue Property="DataPoint" Path="@UI.DataPoint#PaidCount"/>
+                        <PropertyValue Property="Detail">
+                            <Record Type="UI.KPIDetailType">
+                                <PropertyValue Property="DefaultPresentationVariant" Path="@UI.PresentationVariant#Default"/>
+                            </Record>
+                        </PropertyValue>
                     </Record>
                 </Annotation>
                 <Annotation Term="UI.KPI" Qualifier="Monitor">
                     <Record>
+                        <PropertyValue Property="ID" String="MonitorKPI"/>
                         <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#KpiAll"/>
                         <PropertyValue Property="DataPoint" Path="@UI.DataPoint#MonitorCount"/>
+                        <PropertyValue Property="Detail">
+                            <Record Type="UI.KPIDetailType">
+                                <PropertyValue Property="DefaultPresentationVariant" Path="@UI.PresentationVariant#Default"/>
+                            </Record>
+                        </PropertyValue>
                     </Record>
                 </Annotation>
                 <Annotation Term="UI.KPI" Qualifier="Reversed">
                     <Record>
+                        <PropertyValue Property="ID" String="ReversedKPI"/>
                         <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#KpiAll"/>
                         <PropertyValue Property="DataPoint" Path="@UI.DataPoint#ReversedCount"/>
+                        <PropertyValue Property="Detail">
+                            <Record Type="UI.KPIDetailType">
+                                <PropertyValue Property="DefaultPresentationVariant" Path="@UI.PresentationVariant#Default"/>
+                            </Record>
+                        </PropertyValue>
                     </Record>
                 </Annotation>
                 <Annotation Term="UI.KPI" Qualifier="OpenDocs">
                     <Record>
+                        <PropertyValue Property="ID" String="OpenDocsKPI"/>
                         <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#KpiAll"/>
                         <PropertyValue Property="DataPoint" Path="@UI.DataPoint#OpenDocsCount"/>
+                        <PropertyValue Property="Detail">
+                            <Record Type="UI.KPIDetailType">
+                                <PropertyValue Property="DefaultPresentationVariant" Path="@UI.PresentationVariant#Default"/>
+                            </Record>
+                        </PropertyValue>
                     </Record>
                 </Annotation>
             </Annotations>
