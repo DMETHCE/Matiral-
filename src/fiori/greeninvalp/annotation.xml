@@ -13,7 +13,7 @@
     </edmx:Reference>
     <edmx:DataServices>
         <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local">
-            <Annotations Target="xILGxIMMGREENALP_CDS.xILGxIMMGreenAlpType">
+            <Annotations Target="xILGxIMMGREENALP_CDS.xILGxIMMGREENALPType">
                 <Annotation Term="UI.SelectionVariant" Qualifier="KpiAll">
                     <Record>
                         <PropertyValue Property="Text" String="All"/>

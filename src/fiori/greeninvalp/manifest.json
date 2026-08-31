@@ -124,8 +124,8 @@
       "showDraftToggle": false
     },
     "pages": {
-      "AnalyticalListPage|xILGxIMMGreenAlp": {
-        "entitySet": "xILGxIMMGreenAlp",
+      "AnalyticalListPage|xILGxIMMGREENALP": {
+        "entitySet": "xILGxIMMGREENALP",
         "component": {
           "name": "sap.suite.ui.generic.template.AnalyticalListPage",
           "list": true,
@@ -141,35 +141,35 @@
             "keyPerformanceIndicators": {
               "KPITotalSets": {
                 "model": "kpi",
-                "entitySet": "xILGxIMMGreenAlp",
+                "entitySet": "xILGxIMMGREENALP",
                 "qualifier": "TotalSets"
               },
               "KPIPaid": {
                 "model": "kpi",
-                "entitySet": "xILGxIMMGreenAlp",
+                "entitySet": "xILGxIMMGREENALP",
                 "qualifier": "Paid"
               },
               "KPIMonitor": {
                 "model": "kpi",
-                "entitySet": "xILGxIMMGreenAlp",
+                "entitySet": "xILGxIMMGREENALP",
                 "qualifier": "Monitor"
               },
               "KPIReversed": {
                 "model": "kpi",
-                "entitySet": "xILGxIMMGreenAlp",
+                "entitySet": "xILGxIMMGREENALP",
                 "qualifier": "Reversed"
               },
               "KPIOpenDocs": {
                 "model": "kpi",
-                "entitySet": "xILGxIMMGreenAlp",
+                "entitySet": "xILGxIMMGREENALP",
                 "qualifier": "OpenDocs"
               }
             }
           }
         },
         "pages": {
-          "ObjectPage|xILGxIMMGreenAlp": {
-            "entitySet": "xILGxIMMGreenAlp",
+          "ObjectPage|xILGxIMMGREENALP": {
+            "entitySet": "xILGxIMMGREENALP",
             "defaultLayoutTypeIfExternalNavigation": "MidColumnFullScreen",
             "component": {
               "name": "sap.suite.ui.generic.template.ObjectPage"
