@@ -1,6 +1,6 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Green Path - ALP Consumption'
-@Analytics.dataCategory: #CUBE
+@Analytics.query: true
 @OData.publish: true
 @UI.headerInfo: { typeName: 'סט', typeNamePlural: 'סטים',
                   title: { value: 'Qmnum' } }
