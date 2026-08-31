@@ -14,28 +14,41 @@
     <edmx:DataServices>
         <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local">
             <Annotations Target="xILGxIMMGREENALP_CDS.xILGxIMMGreenAlpType">
+                <Annotation Term="UI.SelectionVariant" Qualifier="KpiAll">
+                    <Record>
+                        <PropertyValue Property="Text" String="All"/>
+                        <PropertyValue Property="SelectOptions">
+                            <Collection/>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
                 <Annotation Term="UI.KPI" Qualifier="TotalSets">
                     <Record>
+                        <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#KpiAll"/>
                         <PropertyValue Property="DataPoint" Path="@UI.DataPoint#SetsCount"/>
                     </Record>
                 </Annotation>
                 <Annotation Term="UI.KPI" Qualifier="Paid">
                     <Record>
+                        <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#KpiAll"/>
                         <PropertyValue Property="DataPoint" Path="@UI.DataPoint#PaidCount"/>
                     </Record>
                 </Annotation>
                 <Annotation Term="UI.KPI" Qualifier="Monitor">
                     <Record>
+                        <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#KpiAll"/>
                         <PropertyValue Property="DataPoint" Path="@UI.DataPoint#MonitorCount"/>
                     </Record>
                 </Annotation>
                 <Annotation Term="UI.KPI" Qualifier="Reversed">
                     <Record>
+                        <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#KpiAll"/>
                         <PropertyValue Property="DataPoint" Path="@UI.DataPoint#ReversedCount"/>
                     </Record>
                 </Annotation>
                 <Annotation Term="UI.KPI" Qualifier="OpenDocs">
                     <Record>
+                        <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#KpiAll"/>
                         <PropertyValue Property="DataPoint" Path="@UI.DataPoint#OpenDocsCount"/>
                     </Record>
                 </Annotation>
