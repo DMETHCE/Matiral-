@@ -134,7 +134,7 @@
             "defaultFilterMode": "visual",
             "lazyLoadVisualFilter": false,
             "condensedTableLayout": true,
-            "showGoButtonOnFilterBar": true,
+            "showGoButtonOnFilterBar": false,
             "tableType": "AnalyticalTable",
             "autoHide": true,
             "smartVariantManagement": false,
@@ -145,27 +145,37 @@
               "KPITotalSets": {
                 "model": "kpi",
                 "entitySet": "xILGxIMMGREENALP",
-                "qualifier": "TotalSets"
+                "qualifier": "TotalSets",
+                "shortDescription": "סהכ",
+                "filterable": true
               },
               "KPIPaid": {
                 "model": "kpi",
                 "entitySet": "xILGxIMMGREENALP",
-                "qualifier": "Paid"
+                "qualifier": "Paid",
+                "shortDescription": "שולם",
+                "filterable": true
               },
               "KPIMonitor": {
                 "model": "kpi",
                 "entitySet": "xILGxIMMGREENALP",
-                "qualifier": "Monitor"
+                "qualifier": "Monitor",
+                "shortDescription": "בקרה",
+                "filterable": true
               },
               "KPIReversed": {
                 "model": "kpi",
                 "entitySet": "xILGxIMMGREENALP",
-                "qualifier": "Reversed"
+                "qualifier": "Reversed",
+                "shortDescription": "סטורנו",
+                "filterable": true
               },
               "KPIOpenDocs": {
                 "model": "kpi",
                 "entitySet": "xILGxIMMGREENALP",
-                "qualifier": "OpenDocs"
+                "qualifier": "OpenDocs",
+                "shortDescription": "ממתין",
+                "filterable": true
               }
             }
           }

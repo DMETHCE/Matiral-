@@ -144,3 +144,84 @@ UI.Chart#<Q>                        ← ChartType + Dimension + Measure
   `AnalyticalListPage/control/visualfilterbar/VisualFilterProvider.js`,
   `FilterItemMicroChart.js`, `SmartVisualFilterBar.js`,
   `AnalyticalListPage/Component.js`, `controller/ControllerImplementation.js`.
+
+---
+
+# נספח: למה הטקסט ב-KPI כל כך קטן, ולמה הוא לא מנתב לרשומות
+
+## 1. הטקסט על התגית תמיד מקוצר — זו התנהגות מובנית
+
+`SmartKpiTag.js:967-982` מקצר כל כותרת דרך היוריסטיקה:
+
+| מבנה הכותרת | מה מוצג |
+|---|---|
+| מילה אחת | 3 האותיות הראשונות (`word.substr(0,3).toUpperCase()`) |
+| שתי מילים | אות ראשונה של כל מילה |
+| שלוש מילים ומעלה | אות ראשונה של שלוש המילים הראשונות |
+
+לכן `'סה"כ סטים'` הפך ל-**סה**, ו-`'ממתינים למסמכים'` הפך ל-**ממ**.
+אי אפשר להציג כותרת מלאה על התגית — לא דרך `@UI.dataPoint.title`, ולא דרך
+`ShortDescription` ב-`UI.KPI` (גם היא עוברת את אותה היוריסטיקה).
+
+**מה כן אפשר לשלוט בו:** אם נותנים `shortDescription` של **מילה אחת** ב-
+`manifest.json`, היוריסטיקה מחזירה את 3 האותיות הראשונות שלה — כלומר אנחנו
+בוחרים אילו אותיות יופיעו במקום להסתמך על ראשי תיבות אקראיים.
+(הנתיב: `KPITagList.fragment.xml:8` מקשר `shortDescription="{kpi>shortDescription}"`
+מהגדרות ה-KPI ב-manifest → `SmartKpiTag.setShortDescription`.)
+
+| KPI | לפני | אחרי |
+|---|---|---|
+| סה"כ סטים | סה | **סהכ** |
+| שולמו בפועל | שב | **שול** |
+| בבקרה ידנית | בי | **בקר** |
+| בוצע סטורנו | בס | **סטו** |
+| ממתינים למסמכים | ממ | **ממת** |
+
+הכותרת המלאה זמינה תמיד ב-tooltip (ריחוף) ובראש כרטיס ה-KPI (לחיצה).
+
+## 2. KPI לעולם לא מנתב לרשומות של הטבלה שלו
+
+`KpiTagController.js:167-180` — כפתור הניווט בכרטיס ה-KPI מוצג רק אם קיים אחד משניים:
+
+1. `Detail.SemanticObject` + `Action` בתוך annotation ה-`UI.KPI`, או
+2. `detailNavigation` ב-manifest, שמצביע על ערך תחת
+   `sap.app/crossNavigation/outbounds`.
+
+אחרת הקוד מפורשות מסתיר אותו: *"Have to hide the button, no where to navigate"*.
+
+**וגם כשמגדירים** — הניווט הוא **חוצה-אפליקציות** דרך ה-Fiori Launchpad
+(Semantic Object + Action), כלומר אל אפליקציה **אחרת**. אין ב-ALP מנגנון של
+"לחץ על KPI → סנן את הטבלה". זה פשוט לא קיים בתבנית.
+
+בסביבת Preview אין Launchpad, ולכן גם ניווט מוגדר לא יעבוד שם.
+
+## 3. מה כן פותר את הצורך
+
+| הצורך | הפתרון הנכון |
+|---|---|
+| "לחיצה תסנן לי את הרשומות" | **סרגל הסינון החזותי** (התרשימים) — זה בדיוק תפקידו |
+| "המספר יתייחס למה שאני רואה" | **KPI מסוג filterable** |
+| "להבין מה כל מספר" | `shortDescription` + tooltip + כרטיס ה-KPI |
+
+### KPI מסוג Filterable
+
+`"filterable": true` על KPI ב-manifest מעביר אותו מהשורה העליונה (KPI גלובלי,
+תמיד הסכום המלא) לסרגל שמעל אזור התוכן — ושם הוא **מתעדכן לפי המסננים**.
+זה מה שמחבר את המספר לרשומות שעל המסך.
+
+מקור: `AnnotationHelper.js:335-349` מפצל בין `filterableKPIs` ל-`globalKPIs`;
+`SmartKpiTag.js:482` מסמן את התגית כ-filterable רק כשהיא מקבלת `smartFilterId`,
+מה שקורה רק במיכל של ה-filterable.
+
+> ⚠️ תלות חשובה: אם `showGoButtonOnFilterBar` הוא `true`, ה-KPI מסוג filterable
+> **מוסתר עד שלוחצים Go**. לכן שונה ל-`false` — הסינון מוחל אוטומטית
+> וה-KPI נראה כבר בטעינה.
+
+## מה בוצע במאגר
+
+`src/fiori/greeninvalp/manifest.json`:
+- לכל אחד מ-5 ה-KPI נוספו `"shortDescription"` (מילה אחת → 3 אותיות קריאות)
+  ו-`"filterable": true`.
+- `"showGoButtonOnFilterBar"` שונה מ-`true` ל-`false`.
+
+לביטול: להסיר את `filterable` ולהחזיר את `showGoButtonOnFilterBar` ל-`true`.
