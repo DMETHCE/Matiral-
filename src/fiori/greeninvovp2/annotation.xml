@@ -8,6 +8,9 @@
     <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Communication.xml">
         <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/>
     </edmx:Reference>
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Analytics.xml">
+        <edmx:Include Namespace="com.sap.vocabularies.Analytics.v1" Alias="Analytics"/>
+    </edmx:Reference>
     <edmx:Reference Uri="/sap/opu/odata/ilg/UI_GREENOVP_V2/$metadata">
         <edmx:Include Namespace="ZZNAMESPACE"/>
     </edmx:Reference>
@@ -156,6 +159,15 @@
                         </PropertyValue>
                     </Record>
                 </Annotation>
+            </Annotations>
+            <Annotations Target="ZZNAMESPACE.AggStatType/SetsCount">
+                <Annotation Term="com.sap.vocabularies.Analytics.v1.Measure" Bool="true"/>
+            </Annotations>
+            <Annotations Target="ZZNAMESPACE.AggBukrsType/SetsCount">
+                <Annotation Term="com.sap.vocabularies.Analytics.v1.Measure" Bool="true"/>
+            </Annotations>
+            <Annotations Target="ZZNAMESPACE.AggYearType/SetsCount">
+                <Annotation Term="com.sap.vocabularies.Analytics.v1.Measure" Bool="true"/>
             </Annotations>
         </Schema>
     </edmx:DataServices>

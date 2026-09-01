@@ -86,8 +86,24 @@ e.g. `xILGxIMMGreenAlp` → `xILGxIMMGREENALP` (upper-cased), type
   ready rows. Table card + global filter bind the detail view from the same
   service. See `docs/fiori/fiori_ovp_setup.md` for the full recipe
   (`/ILG/IMMGreenAggStat` / `AggBukrs` / `AggYear` + `/ILG/GREENOVP`).
-- OVP filter bar fields come from `UI.SelectionFields`; live filter propagates
-  only to cards whose entity has same-named properties.
+- OVP filter bar fields come from `UI.SelectionFields` on the global filter
+  entity type (verified: `sap/ovp/app/Component.js:697`); live filter
+  propagates per card only for same-named properties (verified:
+  `FilterUtils.js` → `getEntityRelevantFilters`).
+- **Donut trap (verified `VizAnnotationManager.js:102-104`):** a Donut card
+  silently calls `dataModel.setDefaultCountMode(Inline)` on the SHARED model —
+  it overrides manifest `defaultCountMode: "None"` for ALL cards. Harmless on
+  plain SADL (supports `$inlinecount`), fatal on the MDX/`@Analytics.query`
+  service. This is the final reason OVP + MDX service cannot be mixed.
+- On a plain (non-analytical) service, tag each measure property locally with
+  `com.sap.vocabularies.Analytics.v1.Measure` (Bool true) — OVP recognizes
+  measures by this annotation too (`OVPVizDataHandler.js:78`), which keeps the
+  Donut "Others" aggregation correct without `sap:aggregation-role` metadata.
+- OVP chart cards do NOT require an analytical service at all: the only
+  `sap:semantics === 'aggregate'` check in sap.ovp
+  (`cards/MetadataAnalyser.js:123`) is for parameterized-entityset detection
+  (Insights/parameters), not a card prerequisite. Pre-aggregated entity sets
+  on a plain service are the classic, community-standard pattern.
 
 ## 6. BAS Fiori generator wizard traps
 

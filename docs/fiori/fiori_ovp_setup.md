@@ -1,7 +1,9 @@
 # הקמת דשבורד Fiori — Overview Page (OVP) למסלול הירוק — הדרך הנכונה
 
-**סטטוס:** מדריך מתוקן לאחר תחקיר. הניסיון הראשון (כרטיסים אנליטיים ישירות מול
-השירות של `@Analytics.query`) נכשל — התיעוד המלא של הכשל בסוף המסמך ובקובץ
+**סטטוס:** מדריך מתוקן לאחר תחקיר, **ומאומת מול קוד המקור של SAP** ‏
+(`sap.ovp` 1.136.1 — אותה גרסה שרצה בסביבה) ומול הקהילה. ראו סעיף
+"אימות" בסוף. הניסיון הראשון (כרטיסים אנליטיים ישירות מול השירות של
+`@Analytics.query`) נכשל — התיעוד המלא בסוף המסמך ובקובץ
 `.claude/skills/abap-ilg/references/fiori-rules.md`.
 
 ## העיקרון המנחה (מסקנת התחקיר)
@@ -110,6 +112,32 @@ Standard Mode) ואז `/IWFND/CACHE_CLEANUP`. כאן זה לא רלוונטי כ
 | 8 | אשף BAS: ‏Namespace | ‏Module = השם, ‏Namespace = ‏`ilg` בלבד, בלי נקודות |
 | 9 | העתקות מ-GitHub | רק Raw/Copy raw file — תצוגת הדפדפן מוסיפה שורת זבל שוברת XML |
 | 10 | ‏SE11 Data Browser | ‏"Display/Maintenance Allowed with Restrictions" — ‏"Not Allowed" חוסם גם תצוגה (MO408) |
+
+## אימות (בוצע מול קוד המקור sap.ovp 1.136.1 + קהילות)
+
+| טענה במדריך | איך אומתה | ודאות |
+|---|---|---|
+| כרטיס גרף OVP **אינו** דורש שירות אנליטי (`sap:semantics=aggregate`) | הבדיקה היחידה של `'aggregate'` בקוד (`MetadataAnalyser.js:123`) משמשת רק לזיהוי שירות עם פרמטרים ול-Insights — לא כתנאי לכרטיס; כל מדריכי ה-OVP הקלאסיים (SEGW/CDS) עובדים על נתונים מסוכמים מראש | 99.9% |
+| ‏DimensionAttributes/MeasureAttributes חובה | ‏`VizAnnotationManager.js:896/908` — בדיקה מפורשת עם הודעת השגיאה שראינו | 100% |
+| ‏`UI.SelectionFields` על ישות הפילטר מפעיל את סרגל הסינון | ‏`app/Component.js:697` קורא בדיוק את האנוטציה הזאת | 100% |
+| הפילטר הגלובלי מסנן כל כרטיס רק לפי שדות שקיימים בישות שלו | ‏`FilterUtils.js` ← ‏`getEntityRelevantFilters(entityType, filters)` | 100% |
+| תחביר `count( * )` + ‏GROUP BY ב-view entity | תיעוד ABAP רשמי + דוגמה זהה ב-abap-cheat-sheets של SAP | 99.9% |
+| כרטיס טבלה (`sap.ovp.cards.table`) + ‏manifest keys | הוכח אמפירית אצלנו — הציג נתונים חיים | 100% |
+| מבנה אנוטציית ה-Chart (Enum מלא, ‏Roles) | עבר את הוולידציה של OVP בריצה החיה + תואם דוגמאות קהילה (CAP donut, sapyard) | 99.5% |
+
+**⚠️ תגלית קריטית מהאימות:** כרטיס **דונאט** כופה בשקט
+`setDefaultCountMode(Inline)` על המודל המשותף
+(`VizAnnotationManager.js:102-104`) — זה מה שנטרל את ניסיון התיקון
+`defaultCountMode: None` מול השירות האנליטי והפיל את כל הכרטיסים יחד. על
+שירות SADL רגיל (המדריך הזה) `$inlinecount` נתמך — אז ההתנהגות הזאת אינה
+מזיקה כאן. זו הסיבה הסופית שאין דרך אמינה לערבב כרטיס דונאט עם שירות
+ה-MDX.
+
+**חגורת ביטחון שנוספה:** ‏`annotation.xml` מסמן את `SetsCount` עם
+`com.sap.vocabularies.Analytics.v1.Measure` בכל שלושת ה-Views — הקוד
+(`OVPVizDataHandler.js:78`) מזהה מדד גם לפי האנוטציה הזאת כשאין
+`sap:aggregation-role` במטא-דאטה של שירות רגיל (רלוונטי לחישוב פלח
+"Others" בדונאט כשיש הרבה קטגוריות).
 
 ## מקורות
 
