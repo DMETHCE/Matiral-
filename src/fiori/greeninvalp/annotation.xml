@@ -91,6 +91,227 @@
                         </PropertyValue>
                     </Record>
                 </Annotation>
+                <!-- ============================================================
+                     Visual Filter Bar - תרשימי הסינון החזותי
+                     כל פילטר חזותי דורש שלושה חלקים:
+                     1) UI.Chart      - ChartType + Dimension + Measure
+                     2) UI.PresentationVariant - SortOrder + הפניה לתרשים
+                     3) Common.ValueList על השדה - עם PresentationVariantQualifier
+                     סוגי תרשים נתמכים: Bar / Donut / Line בלבד
+                     ============================================================ -->
+                <Annotation Term="UI.Chart" Qualifier="VFStat">
+                    <Record Type="UI.ChartDefinitionType">
+                        <PropertyValue Property="Title" String="סטים לפי סטטוס"/>
+                        <PropertyValue Property="ChartType" EnumMember="com.sap.vocabularies.UI.v1.ChartType/Bar"/>
+                        <PropertyValue Property="Dimensions">
+                            <Collection>
+                                <PropertyPath>LogicalStatusCode</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="DimensionAttributes">
+                            <Collection>
+                                <Record Type="UI.ChartDimensionAttributeType">
+                                    <PropertyValue Property="Dimension" PropertyPath="LogicalStatusCode"/>
+                                    <PropertyValue Property="Role" EnumMember="com.sap.vocabularies.UI.v1.ChartDimensionRoleType/Category"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Measures">
+                            <Collection>
+                                <PropertyPath>SetsCount</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="MeasureAttributes">
+                            <Collection>
+                                <Record Type="UI.ChartMeasureAttributeType">
+                                    <PropertyValue Property="Measure" PropertyPath="SetsCount"/>
+                                    <PropertyValue Property="Role" EnumMember="com.sap.vocabularies.UI.v1.ChartMeasureRoleType/Axis1"/>
+                                    <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#SetsCount"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.PresentationVariant" Qualifier="VFStat">
+                    <Record>
+                        <PropertyValue Property="Text" String="סינון: סטים לפי סטטוס"/>
+                        <PropertyValue Property="SortOrder">
+                            <Collection>
+                                <Record Type="Common.SortOrderType">
+                                    <PropertyValue Property="Property" PropertyPath="SetsCount"/>
+                                    <PropertyValue Property="Descending" Bool="true"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Visualizations">
+                            <Collection>
+                                <AnnotationPath>@UI.Chart#VFStat</AnnotationPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Chart" Qualifier="VFComp">
+                    <Record Type="UI.ChartDefinitionType">
+                        <PropertyValue Property="Title" String="סטים לפי חברה"/>
+                        <PropertyValue Property="ChartType" EnumMember="com.sap.vocabularies.UI.v1.ChartType/Donut"/>
+                        <PropertyValue Property="Dimensions">
+                            <Collection>
+                                <PropertyPath>Bukrs</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="DimensionAttributes">
+                            <Collection>
+                                <Record Type="UI.ChartDimensionAttributeType">
+                                    <PropertyValue Property="Dimension" PropertyPath="Bukrs"/>
+                                    <PropertyValue Property="Role" EnumMember="com.sap.vocabularies.UI.v1.ChartDimensionRoleType/Category"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Measures">
+                            <Collection>
+                                <PropertyPath>SetsCount</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="MeasureAttributes">
+                            <Collection>
+                                <Record Type="UI.ChartMeasureAttributeType">
+                                    <PropertyValue Property="Measure" PropertyPath="SetsCount"/>
+                                    <PropertyValue Property="Role" EnumMember="com.sap.vocabularies.UI.v1.ChartMeasureRoleType/Axis1"/>
+                                    <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#SetsCount"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.PresentationVariant" Qualifier="VFComp">
+                    <Record>
+                        <PropertyValue Property="Text" String="סינון: סטים לפי חברה"/>
+                        <PropertyValue Property="SortOrder">
+                            <Collection>
+                                <Record Type="Common.SortOrderType">
+                                    <PropertyValue Property="Property" PropertyPath="SetsCount"/>
+                                    <PropertyValue Property="Descending" Bool="true"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Visualizations">
+                            <Collection>
+                                <AnnotationPath>@UI.Chart#VFComp</AnnotationPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Chart" Qualifier="VFYear">
+                    <Record Type="UI.ChartDefinitionType">
+                        <PropertyValue Property="Title" String="סטים לפי שנת כספים"/>
+                        <PropertyValue Property="ChartType" EnumMember="com.sap.vocabularies.UI.v1.ChartType/Bar"/>
+                        <PropertyValue Property="Dimensions">
+                            <Collection>
+                                <PropertyPath>GjahrMm</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="DimensionAttributes">
+                            <Collection>
+                                <Record Type="UI.ChartDimensionAttributeType">
+                                    <PropertyValue Property="Dimension" PropertyPath="GjahrMm"/>
+                                    <PropertyValue Property="Role" EnumMember="com.sap.vocabularies.UI.v1.ChartDimensionRoleType/Category"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Measures">
+                            <Collection>
+                                <PropertyPath>SetsCount</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="MeasureAttributes">
+                            <Collection>
+                                <Record Type="UI.ChartMeasureAttributeType">
+                                    <PropertyValue Property="Measure" PropertyPath="SetsCount"/>
+                                    <PropertyValue Property="Role" EnumMember="com.sap.vocabularies.UI.v1.ChartMeasureRoleType/Axis1"/>
+                                    <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#SetsCount"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.PresentationVariant" Qualifier="VFYear">
+                    <Record>
+                        <PropertyValue Property="Text" String="סינון: סטים לפי שנה"/>
+                        <PropertyValue Property="SortOrder">
+                            <Collection>
+                                <Record Type="Common.SortOrderType">
+                                    <PropertyValue Property="Property" PropertyPath="SetsCount"/>
+                                    <PropertyValue Property="Descending" Bool="true"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Visualizations">
+                            <Collection>
+                                <AnnotationPath>@UI.Chart#VFYear</AnnotationPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <!-- ============================================================
+                 ValueList עם PresentationVariantQualifier = המתג שמפעיל
+                 את הפילטר החזותי. CollectionPath מצביע על ה-EntitySet
+                 האנליטי עצמו (כמו באפליקציית הדגם של SAP), ולכן ה-
+                 aggregation-role של המימד והמדד כבר קיים ב-metadata.
+                 ============================================================ -->
+            <Annotations Target="xILGxIMMGREENALP_CDS.xILGxIMMGREENALPType/LogicalStatusCode">
+                <Annotation Term="Common.ValueList" Qualifier="VFStat">
+                    <Record>
+                        <PropertyValue Property="Label" String="סטטוס לוגי"/>
+                        <PropertyValue Property="CollectionPath" String="xILGxIMMGREENALP"/>
+                        <PropertyValue Property="SearchSupported" Bool="false"/>
+                        <PropertyValue Property="PresentationVariantQualifier" String="VFStat"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="LogicalStatusCode"/>
+                                    <PropertyValue Property="ValueListProperty" String="LogicalStatusCode"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="xILGxIMMGREENALP_CDS.xILGxIMMGREENALPType/Bukrs">
+                <Annotation Term="Common.ValueList" Qualifier="VFComp">
+                    <Record>
+                        <PropertyValue Property="Label" String="קוד חברה"/>
+                        <PropertyValue Property="CollectionPath" String="xILGxIMMGREENALP"/>
+                        <PropertyValue Property="SearchSupported" Bool="false"/>
+                        <PropertyValue Property="PresentationVariantQualifier" String="VFComp"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Bukrs"/>
+                                    <PropertyValue Property="ValueListProperty" String="Bukrs"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="xILGxIMMGREENALP_CDS.xILGxIMMGREENALPType/GjahrMm">
+                <Annotation Term="Common.ValueList" Qualifier="VFYear">
+                    <Record>
+                        <PropertyValue Property="Label" String="שנת כספים"/>
+                        <PropertyValue Property="CollectionPath" String="xILGxIMMGREENALP"/>
+                        <PropertyValue Property="SearchSupported" Bool="false"/>
+                        <PropertyValue Property="PresentationVariantQualifier" String="VFYear"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="GjahrMm"/>
+                                    <PropertyValue Property="ValueListProperty" String="GjahrMm"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
             </Annotations>
         </Schema>
     </edmx:DataServices>

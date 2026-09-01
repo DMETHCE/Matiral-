@@ -131,6 +131,8 @@
           "list": true,
           "settings": {
             "qualifier": "Default",
+            "defaultFilterMode": "visual",
+            "lazyLoadVisualFilter": false,
             "condensedTableLayout": true,
             "showGoButtonOnFilterBar": true,
             "tableType": "AnalyticalTable",

@@ -153,3 +153,55 @@ e.g. `xILGxIMMGreenAlp` → `xILGxIMMGREENALP` (upper-cased), type
 - Data Browser/Table View Editing for snapshot Z-tables:
   **"Display/Maintenance Allowed with Restrictions"** — plain "Allowed" opens
   SE16N in edit mode; "Not Allowed" blocks even display (MO408).
+
+## 10. ALP Visual Filter Bar (the mini-charts in the filter area)
+
+The charts in SAP's ALP screenshots that are NOT the KPI tags are the **visual
+filter bar**: one micro-chart per filter field. All rules below verified against
+`sap.suite.ui.generic.template` 1.136.1 sources.
+
+- **Trigger** (`VisualFilterProvider.js:505`): a property carries an annotation
+  whose term contains `com.sap.vocabularies.Common.v1.ValueList` **and** that
+  record has `PresentationVariantQualifier`. Nothing else turns the bar on —
+  no manifest flag creates it.
+- Three annotations per filter, all on the **value-help entity type**
+  (`CollectionPath`), not necessarily the main one:
+  `UI.Chart#<Q>` → `UI.PresentationVariant#<Q>` (Visualizations→the chart) →
+  `Common.ValueList#<Q>` on the property with `PresentationVariantQualifier`.
+- **Hard requirement** (`VisualFilterProvider.js:1109`): in the CollectionPath
+  entity, the dimension must carry `sap:aggregation-role="dimension"` and the
+  measure `sap:aggregation-role="measure"`, else it logs
+  "…have NO 'sap:aggregation-role' defined in metadata" and skips the chart.
+  ⇒ the value-help entity set **must be analytical**. A plain SADL
+  pre-aggregated view (the OVP trick) does NOT work here. Simplest correct
+  choice: `CollectionPath` = the ALP's own entity set (this is what SAP's
+  reference app SEPMRA_ALP_SO_ANA_SRV does).
+- Mandatory inside the chart: `ChartType` (read unguarded at line 797 — a
+  missing one throws), `Dimensions[0]`, `Measures[0]`. `DimensionAttributes`/
+  `MeasureAttributes` are optional here (unlike OVP), but `MeasureAttributes`
+  carries the optional `DataPoint` used for scale factor and criticality.
+- Only **Bar / Donut / Line** exist (`SmartVisualFilterBar.js:1130-1147`).
+  `#COLUMN` silently falls back to Bar with a console error. Visible records:
+  Bar = top 3, Donut = top 2 + "Others", Line = 6 points.
+- `Parameters` needs one `ValueListParameterInOut` whose `LocalDataProperty` =
+  the filter field and `ValueListProperty` = the chart dimension — that pair is
+  what becomes the OutParameter (line 907); without it a click can't filter.
+  All *other* filter fields are added as IN parameters automatically because
+  `allFiltersAsInParameters` defaults to **true** (`Component.js:625`,
+  `VisualFilterProvider.js:1129`).
+- Fields are skipped when `filter-restriction = "interval"` or
+  `sap:filterable="false"` (line 496), and when the field is `UI.Hidden` /
+  `UI.HiddenFilter`. Range/interval filters can never be visual.
+- Data is fetched with a **plain `model.read()`** — `$select` + `$top` (+`$expand`),
+  sorters/filters as objects, and **no `$inlinecount`**
+  (`FilterItemMicroChart.js:635-640`). That is why visual filters work against
+  the `@Analytics.query` (MDX) service even though OVP cards do not: OVP's
+  Donut forces `$inlinecount`, this does not.
+- Manifest (all optional): `"defaultFilterMode": "visual"` (already the default,
+  `Component.js:519`), `"lazyLoadVisualFilter": false` to load charts up front
+  (default true), `"hideVisualFilter": true` to suppress the bar entirely.
+  With `metadataUrlParams: {"sap-value-list":"none"}` the framework takes a
+  special branch (`ControllerImplementation.js:161`) and calls
+  `associateValueLists()` — local annotation.xml value lists are unaffected.
+- Guideline from SAP: one measure per dimension; never the same dimension twice
+  with different measures — use an OVP for that.
