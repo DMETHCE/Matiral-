@@ -135,6 +135,7 @@ See also:
 - `hana-rules.md` — HANA-safe SELECT patterns
 - `cds-rules.md` — CDS view-entity rules (parameter passing, COUNT DISTINCT, pivot via Table Function + AMDP, source view name verification)
 - `quality.md` — ATC / CVA gates
+- `fiori-rules.md` — **READ before any Fiori Elements work (ALP/OVP), CDS analytics annotations (@Analytics.query vs #CUBE), OData exposure (@OData.publish / Service Binding), BAS wizard, manifest.json or annotation.xml.** Hard-won rules: query-vs-cube (sap:semantics=aggregate), Wrong-DPC-class recovery, entity renames after regeneration, UI.KPI structure (Path= not AnnotationPath=), ALP qualifier matching, OVP DimensionAttributes + pre-aggregated-CDS architecture (OVP cannot aggregate against the MDX service), BAS namespace trap (Module=name, Namespace=ilg only), $batch-payload debugging (GW_CLIENT blocks query strings in this landscape), GitHub raw-copy rules.
 - `bapi-mass-upload.md` — **READ before writing any file→BAPI mass-load report.** Verified BAPI field names (BAPI_MARA/MARC/MLAN), internal numbering via GETINTNUMBER (RETURN is BAPIRETURN1), ATC `DB_OPS_IN_LOOPS` pseudo-comment placement (on the in-loop call, not the deep BAPI), PERFORM expression/`csequence` limits, robust xlsx reading by **header name** (xlsx omits empty cells → stale-value leak), Text-Symbol messages with `&` REPLACE, display-only selection fields (MODIF ID + PBO), Excel-ordered log, background execution (gui_upload can't run in batch → OPEN DATASET / INDX; ALV display is a no-op in batch)
 
 ## Default Program Skeleton

@@ -1,0 +1,34 @@
+שני אובייקטים ליצירה ב-ADT (קליק ימני על החבילה → New → Other ABAP Repository Object → Business Services):
+
+==========================================================
+1) Service Definition — שם: /ILG/GREENOVP
+==========================================================
+
+@EndUserText.label: 'Green Path OVP Service'
+define service /ILG/GREENOVP {
+  expose /ILG/IMMGreenTrack    as GreenTrack;
+  expose /ILG/IMMGreenAggStat  as AggStat;
+  expose /ILG/IMMGreenAggBukrs as AggBukrs;
+  expose /ILG/IMMGreenAggYear  as AggYear;
+}
+
+→ Ctrl+F3 (אקטיבציה)
+
+==========================================================
+2) Service Binding — שם: /ILG/UI_GREENOVP_V2
+==========================================================
+
+New → Business Services → Service Binding
+- Binding Type: OData V2 - UI
+- Service Definition: /ILG/GREENOVP
+→ אקטיבציה → כפתור Publish
+
+לאחר ה-Publish:
+- העתק את ה-Service URL שמופיע במסך ה-Binding
+  (בדרך כלל: /sap/opu/odata/ilg/UI_GREENOVP_V2/ או דומה)
+- לחץ על GreenTrack → Preview כדי לוודא שהנתונים חוזרים
+- פתח את ה-$metadata של השירות (GW_CLIENT או דפדפן) ורשום:
+  * את ה-Namespace של ה-Schema
+  * את שמות ה-EntityType (למשל GreenTrackType / AggStatType)
+  אלה נדרשים לעדכון ה-Target בקובץ annotation.xml של פרויקט ה-OVP
+  (ראו docs/fiori/fiori_ovp_setup.md שלב ג').
