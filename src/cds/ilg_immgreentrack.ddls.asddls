@@ -190,7 +190,10 @@ define view entity /ILG/IMMGreenTrack
         case when fi.xreversed = 'X' then stx.txt40 else '' end,
         cast( '' as abap.char(40) ) )                        as StgrdTxt,
 
-      // תאריך השאילתה (View חי - אין "שעת עדכון")
-      @EndUserText.label: 'תאריך שאילתה'
-      $session.system_date                                   as Aedat
+      // תאריך ושעת יצירת הסט - מטבלת המקור
+      @EndUserText.label: 'תאריך יצירת סט'
+      grpo.datum                                             as Aedat,
+
+      @EndUserText.label: 'שעת יצירת סט'
+      grpo.uzeit                                             as Uzeit
 }
