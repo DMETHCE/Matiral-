@@ -188,13 +188,5 @@ define view entity /ILG/IMMGreenTrack
       @EndUserText.label: 'תיאור סיבת סטורנו'
       coalesce(
         case when fi.xreversed = 'X' then stx.txt40 else '' end,
-        cast( '' as abap.char(40) ) )                        as StgrdTxt,
-
-      // תאריך ושעת יצירת הסט - מטבלת המקור
-      // (AEDAT/AEZET שמורים לטבלת הטעינה - מועד ה-snapshot)
-      @EndUserText.label: 'תאריך יצירת סט'
-      grpo.datum                                             as Datum,
-
-      @EndUserText.label: 'שעת יצירת סט'
-      grpo.uzeit                                             as Uzeit
+        cast( '' as abap.char(40) ) )                        as StgrdTxt
 }
