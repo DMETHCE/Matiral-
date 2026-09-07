@@ -2,15 +2,15 @@
 @EndUserText.label: 'Green Path - ALP Consumption'
 @Analytics.query: true
 @OData.publish: true
+
 @UI.headerInfo: { typeName: 'סט', typeNamePlural: 'סטים',
                   title: { value: 'Qmnum' } }
-// תרשים ברירת המחדל של ה-ALP: עמודות של מספר סטים לפי סטטוס
 @UI.chart: [ { qualifier: 'StatusChart',
                title: 'סטים לפי סטטוס',
                chartType: #COLUMN,
                dimensions: [ 'LogicalStatus' ],
                measures:   [ 'SetsCount' ] },
-             // תרשימי Visual Filter לסרגל הסינון החזותי
+
              { qualifier: 'VFStatus',  chartType: #BAR,
                dimensions: [ 'LogicalStatusCode' ], measures: [ 'SetsCount' ] },
              { qualifier: 'VFBukrs',   chartType: #DONUT,
@@ -20,11 +20,7 @@
 @UI.presentationVariant: [ { qualifier: 'Default',
                              visualizations: [ { type: #AS_CHART, qualifier: 'StatusChart' },
                                                { type: #AS_LINEITEM } ] } ]
-/*
- * שכבת ה-Consumption לאפליקציית ה-ALP (Analytical List Page).
- * חשיפה: Service Definition + Binding (מומלץ) או @OData.publish.
- * ראו docs/fiori/fiori_alp_setup.md להנחיות המלאות.
- */
+
 define view entity /ILG/IMMGreenAlp
   as select from /ILG/IMMGreenCube
 {
@@ -76,7 +72,7 @@ define view entity /ILG/IMMGreenAlp
       @EndUserText.label: 'טובין ידני'
       MblnrHandledManually,
 
-      // ---------- מדדים + KPI DataPoints ----------
+      // ---------- DataPoints ----------
       @EndUserText.label: 'מספר סטים'
       @UI.dataPoint: { title: 'סה"כ סטים' }
       @UI.lineItem:  [ { position: 100 } ]
