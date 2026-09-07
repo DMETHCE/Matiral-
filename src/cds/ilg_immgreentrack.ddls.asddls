@@ -12,8 +12,9 @@
  *   /ILG/MM_GRPO_DET (הסט) -> QMMA (קודי סטטוס, MNGRP='ZPU')
  *   -> RBKP (מצב החשבונית: RBSTAT 5=נרשמה, 2=נמחקה)
  *   -> BKPF דרך AWKEY=BELNR+GJAHR + AWTYP='RMRP', מוצמד ל-BUKRS של RBKP
- *   -> סטורנו: XREVERSED='X'; מסמך הסטורנו נקרא לפי BUKRS+STBLG+STJAH
- *      (לא דרך AWREF_REV - הוא מאוכלס על מסמך הסטורנו, לא על המקור)
+ *   -> סטורנו: XREVERSED='X'; מסמך הסטורנו נקרא לפי AWKEY = AWREF_REV+AWORG_REV
+ *      של המסמך המקורי (AWTYP='RMRP'). STBLG/STJAH אינם מאוכלסים בסטורנו
+ *      של חשבונית לוגיסטית (MR8M) - אומת מול BKPF, 07.09.2026
  *   -> T041CT (טקסט סיבת ביטול, TXT40) ; ACDOCA (תשלום, AUGBL '2%')
  *
  * דרישה: S/4HANA 2020 ומעלה (view entity + ביטויים בתנאי ON).
@@ -40,12 +41,13 @@ define view entity /ILG/IMMGreenTrack
       and grpo.belnr  <> ''
       and grpo.gjahr  <> '0000'
 
-    // מסמך הסטורנו לפי המפתח המלא - לשליפת סיבת הביטול (STGRD)
+    // מסמך הסטורנו - לשליפת סיבת הביטול (STGRD). המצביע אליו יושב על
+    // המסמך המקורי: AWREF_REV (חשבונית הביטול) + AWORG_REV (שנת כספים)
     left outer join bkpf as rev
-      on  rev.bukrs  = fi.bukrs
-      and rev.belnr  = fi.stblg
-      and rev.gjahr  = fi.stjah
-      and fi.stblg  <> ''
+      on  rev.awkey      = concat( fi.awref_rev, fi.aworg_rev )
+      and rev.awtyp      = 'RMRP'
+      and rev.bukrs      = fi.bukrs
+      and fi.awref_rev  <> ''
 
     // טקסט סיבת סטורנו בשפת המשתמש
     left outer join t041ct as stx
