@@ -8,8 +8,10 @@
  * מקור (VDM): I_JournalEntryItem - View משוחרר (Cube) על ACDOCA.
  *   Ledger                     = RLDNR   '0L' ledger מוביל בלבד; אם שונה אצלכם - לעדכן
  *   FinancialAccountType       = KOART   'K' = ספק
- *   ClearingAccountingDocument = AUGBL   מסמך הסילוק; לפי האפיון מסמך תשלום מתחיל
- *                                        ב-'2' - סטורנו שמסלק את שורת הספק אינו תשלום
+ *   ClearingJournalEntry       = AUGBL   מסמך הסילוק; לפי האפיון מסמך תשלום מתחיל
+ *                                        ב-'2' - סטורנו שמסלק את שורת הספק אינו תשלום.
+ *                                        (ClearingAccountingDocument מסומן Deprecated
+ *                                        בקטלוג - היורש הוא ClearingJournalEntry)
  *   ClearingDate               = AUGDT
  *   CompanyCode / AccountingDocument / FiscalYear = RBUKRS / BELNR / GJAHR
  *
@@ -29,14 +31,14 @@ define view entity /ILG/IMMGpClearing
   key FiscalYear                         as Gjahr,
 
       @EndUserText.label: 'מסמך תשלום'
-      max( ClearingAccountingDocument )  as Augbl,
+      max( ClearingJournalEntry )        as Augbl,
       @EndUserText.label: 'תאריך תשלום'
       max( ClearingDate )                as Augdt
 }
 where
       Ledger                     = '0L'
   and FinancialAccountType       = 'K'
-  and ClearingAccountingDocument like '2%'
+  and ClearingJournalEntry       like '2%'
 group by
   CompanyCode,
   AccountingDocument,

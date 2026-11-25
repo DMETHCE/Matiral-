@@ -15,7 +15,7 @@
 | `/ILG/I_NotifPurchaseOrder` (חדש) | — | `/ILG/PM_NOTIF_PO` |
 | `/ILG/IMMGpPoDocs` | `/ILG/PM_NOTIF_PO` + `EKBE` | `/ILG/I_NotifPurchaseOrder` + `I_PurchaseOrderHistoryAPI01` |
 | `/ILG/IMMGpQmmaStatus` | `QMMA` | `I_QltyNotificationActivity` |
-| `/ILG/IMMGpClearing` | `ACDOCA` | `I_JournalEntryItem` |
+| `/ILG/IMMGpClearing` | `ACDOCA` | `I_JournalEntryItem` (`ClearingJournalEntry`) |
 | `/ILG/IMMGpSetDocs` | `/ILG/MM_GRPO_DET` + `/ILG/PM_NOTIF_BP` | `/ILG/I_GreenPathSet` + `/ILG/I_NotifPaymentInvoice` |
 | `/ILG/IMMGreenTrack2` | `RBKP`, `BKPF`×2, `T041CT` | `I_SupplierInvoiceAPI01`, `I_JournalEntry`×2, `I_ReversalReasonText` |
 
@@ -76,6 +76,10 @@
    לא קיים בקטלוג.
 3. ✅ **`I_ReversalReasonText`** (Basic, Released) — `Language`,
    `ReversalReason`, `ReversalReasonName`. הקוד תואם.
+
+4. ✅ **כל שדה VDM בשימוש ב-`src/cds` נבדק מול `sap-vdm-catalog/fields.tsv`** —
+   כולם קיימים. תיקון אחד: `I_JournalEntryItem.ClearingAccountingDocument` מסומן
+   Deprecated; `/ILG/IMMGpClearing` עבר ליורש `ClearingJournalEntry`.
 
 ## 3א. מה נשאר לבדוק ב-ADT
 

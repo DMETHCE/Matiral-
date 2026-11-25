@@ -42,5 +42,6 @@ ACDOCA	RBUKRS	I_JournalEntryItem	CompanyCode	2026-11-25	secondary (paspas.io)
 ACDOCA	BELNR	I_JournalEntryItem	AccountingDocument	2026-11-25	secondary (paspas.io)
 ACDOCA	GJAHR	I_JournalEntryItem	FiscalYear	2026-11-25	secondary (paspas.io)
 ACDOCA	KOART	I_JournalEntryItem	FinancialAccountType	2026-11-25	secondary (paspas.io)
-ACDOCA	AUGBL	I_JournalEntryItem	ClearingAccountingDocument	2026-11-25	secondary (paspas.io)
+ACDOCA	AUGBL	I_JournalEntryItem	ClearingJournalEntry	2026-11-25	fields.tsv (successor of deprecated ClearingAccountingDocument) + secondary (paspas.io)	do not use ClearingAccountingDocument - Deprecated
 ACDOCA	AUGDT	I_JournalEntryItem	ClearingDate	2026-11-25	secondary (paspas.io)
+ACDOCA	AUGGJ	I_JournalEntryItem	ClearingJournalEntryFiscalYear	2026-11-25	fields.tsv (successor of deprecated ClearingDocFiscalYear)	not used yet
