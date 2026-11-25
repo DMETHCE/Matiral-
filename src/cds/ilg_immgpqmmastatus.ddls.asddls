@@ -17,8 +17,9 @@
  *
  * סיכון פתוח: SAP מתעדת את ה-View להודעות איכות, והודעות המסלול הירוק
  * הן הודעות PM. לבדוק ב-Data Preview שהוא מחזיר שורות ל-QMNUM מוכר;
- * אם לא - החלופה המשוחררת היא I_MaintNotificationActyData (SAP ממליצה
- * עליה ל-BW בלבד) - להחליף מקור ושמות שדות בהתאם.
+ * אם לא - החלופה המשוחררת היא C_MaintNotifActivityDEX (הודעות PM):
+ * MaintenanceNotification / MaintNotifActivityCodeGroup /
+ * MaintNotificationActivityCode / IsDeleted.
  */
 define view entity /ILG/IMMGpQmmaStatus
   as select from I_QltyNotificationActivity

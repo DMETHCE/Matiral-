@@ -70,7 +70,10 @@
    `IsDeleted`. הקוד תואם.
    ⚠️ **נותר לבדוק ב-ADT:** SAP מתעדת את ה-View להודעות איכות, והודעות
    המסלול הירוק הן PM. Data Preview על QMNUM מוכר חייב להחזיר שורות; אם לא —
-   לעבור ל-`I_MaintNotificationActyData` (Released, מומלץ ל-BW בלבד).
+   לעבור ל-`C_MaintNotifActivityDEX` (Consumption, Released, View הודעות PM —
+   נמצא בקטלוג api.sap.com; `MaintenanceNotification` / `MaintNotifActivityCodeGroup` /
+   `MaintNotificationActivityCode` / `IsDeleted`). `I_MaintNotificationActyData`
+   לא קיים בקטלוג.
 3. ✅ **`I_ReversalReasonText`** (Basic, Released) — `Language`,
    `ReversalReason`, `ReversalReasonName`. הקוד תואם.
 
@@ -84,6 +87,11 @@
    (M_BEST_EKO/EKG/BSA/WRK, F_BKPF_BUK, ledger).
 4. `R_PURCRECORDER` — לא נמצא באינטרנט; EKKO/EKPO = `I_PurchaseOrderAPI01` /
    `I_PurchaseOrderItemAPI01`.
+
+## 3ב. קטלוג VDM
+
+שמות Views ושדות נבדקים מעכשיו רק מול `sap-vdm-catalog/` בשורש המאגר
+(כל קטלוג ה-Views המשוחררים של SAP + מיפוי טבלה→View מאומת). פירוט ב-README שם.
 
 ## 4. עבודה על המאגר מסשן מקומי
 

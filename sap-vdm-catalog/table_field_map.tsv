@@ -1,0 +1,46 @@
+db_table	db_field	view	view_field	verified	source	note
+BKPF	BUKRS	I_JournalEntry	CompanyCode	2026-11-25	api.sap.com
+BKPF	BELNR	I_JournalEntry	AccountingDocument	2026-11-25	api.sap.com
+BKPF	GJAHR	I_JournalEntry	FiscalYear	2026-11-25	api.sap.com
+BKPF	AWKEY	I_JournalEntry	OriginalReferenceDocument	2026-11-25	api.sap.com + help.sap.com	not ReferenceDocument
+BKPF	AWTYP	I_JournalEntry	ReferenceDocumentType	2026-11-25	api.sap.com
+BKPF	XREVERSED	I_JournalEntry	IsReversed	2026-11-25	api.sap.com
+BKPF	XREVERSING	I_JournalEntry	IsReversal	2026-11-25	api.sap.com	mapped by field description
+BKPF	STBLG	I_JournalEntry	ReverseDocument	2026-11-25	api.sap.com	mapped by field description
+BKPF	STJAH	I_JournalEntry	ReverseDocumentFiscalYear	2026-11-25	api.sap.com	mapped by field description
+BKPF	STGRD	I_JournalEntry	ReversalReason	2026-11-25	api.sap.com
+BKPF	AWREF_REV	I_JournalEntry	ReversalReferenceDocument	2026-11-25	api.sap.com	CHAR10
+BKPF	AWORG_REV	I_JournalEntry	ReversalReferenceDocumentCntxt	2026-11-25	api.sap.com	CHAR10
+T041CT	SPRAS	I_ReversalReasonText	Language	2026-11-25	api.sap.com	text view of I_ReversalReason
+T041CT	STGRD	I_ReversalReasonText	ReversalReason	2026-11-25	api.sap.com
+T041CT	TXT40	I_ReversalReasonText	ReversalReasonName	2026-11-25	api.sap.com
+QMMA	QMNUM	I_QltyNotificationActivity	QualityNotification	2026-11-25	api.sap.com	documented for quality notifications - PM rows unconfirmed
+QMMA	MANUM	I_QltyNotificationActivity	NotificationActivity	2026-11-25	api.sap.com + help.sap.com
+QMMA	MNGRP	I_QltyNotificationActivity	NotifActivityCodeGroup	2026-11-25	api.sap.com
+QMMA	MNCOD	I_QltyNotificationActivity	NotifActivityCode	2026-11-25	api.sap.com
+QMMA	KZLOESCH	I_QltyNotificationActivity	IsDeleted	2026-11-25	api.sap.com
+QMMA	QMNUM	C_MaintNotifActivityDEX	MaintenanceNotification	2026-11-25	api.sap.com	PM notifications, consumption view for data extraction
+QMMA	MANUM	C_MaintNotifActivityDEX	MaintNotificationActivity	2026-11-25	api.sap.com
+QMMA	MNGRP	C_MaintNotifActivityDEX	MaintNotifActivityCodeGroup	2026-11-25	api.sap.com
+QMMA	MNCOD	C_MaintNotifActivityDEX	MaintNotificationActivityCode	2026-11-25	api.sap.com
+QMMA	KZLOESCH	C_MaintNotifActivityDEX	IsDeleted	2026-11-25	api.sap.com
+RBKP	BELNR	I_SupplierInvoiceAPI01	SupplierInvoice	2026-11-25	help.sap.com
+RBKP	GJAHR	I_SupplierInvoiceAPI01	FiscalYear	2026-11-25	help.sap.com
+RBKP	BUKRS	I_SupplierInvoiceAPI01	CompanyCode	2026-11-25	help.sap.com
+RBKP	RBSTAT	I_SupplierInvoiceAPI01	SupplierInvoiceStatus	2026-11-25	help.sap.com
+EKBE	EBELN	I_PurchaseOrderHistoryAPI01	PurchaseOrder	2026-11-25	help.sap.com
+EKBE	EBELP	I_PurchaseOrderHistoryAPI01	PurchaseOrderItem	2026-11-25	help.sap.com
+EKBE	VGABE	I_PurchaseOrderHistoryAPI01	PurchasingHistoryDocumentType	2026-11-25	help.sap.com	1=GR 2=IR
+EKBE	BEWTP	I_PurchaseOrderHistoryAPI01	PurchasingHistoryCategory	2026-11-25	help.sap.com
+EKBE	SHKZG	I_PurchaseOrderHistoryAPI01	DebitCreditCode	2026-11-25	help.sap.com
+EKBE	BELNR	I_PurchaseOrderHistoryAPI01	PurchasingHistoryDocument	2026-11-25	help.sap.com
+EKBE	GJAHR	I_PurchaseOrderHistoryAPI01	PurchasingHistoryDocumentYear	2026-11-25	help.sap.com
+EKBE	LFBNR	I_PurchaseOrderHistoryAPI01	ReferenceDocument	2026-11-25	help.sap.com
+EKBE	LFGJA	I_PurchaseOrderHistoryAPI01	ReferenceDocumentFiscalYear	2026-11-25	help.sap.com
+ACDOCA	RLDNR	I_JournalEntryItem	Ledger	2026-11-25	secondary (paspas.io)
+ACDOCA	RBUKRS	I_JournalEntryItem	CompanyCode	2026-11-25	secondary (paspas.io)
+ACDOCA	BELNR	I_JournalEntryItem	AccountingDocument	2026-11-25	secondary (paspas.io)
+ACDOCA	GJAHR	I_JournalEntryItem	FiscalYear	2026-11-25	secondary (paspas.io)
+ACDOCA	KOART	I_JournalEntryItem	FinancialAccountType	2026-11-25	secondary (paspas.io)
+ACDOCA	AUGBL	I_JournalEntryItem	ClearingAccountingDocument	2026-11-25	secondary (paspas.io)
+ACDOCA	AUGDT	I_JournalEntryItem	ClearingDate	2026-11-25	secondary (paspas.io)

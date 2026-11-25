@@ -131,6 +131,7 @@ When this skill is active, you must follow **all** of the rules below for every 
     - Use `gc_icon_ok` (`@09@` green) for success and persisted-counts — NEVER `gc_icon_warn` (`@08@` yellow) for successful outcomes. Yellow is reserved for warnings; green is the unambiguous success signal.
 
 See also:
+- **VDM catalog — `sap-vdm-catalog/` at the repo root. READ before choosing any released CDS view or field name, and before asking the user to check anything in ADT.** `views.tsv` (every released/deprecated view, edition Private Cloud), `fields.tsv` (every field), `table_field_map.tsv` (verified DB table field -> view field). Never research a view/field on the web or ask the user if the answer is in these files. New verified mappings go into `table_field_map.tsv` with date + source; a missing view -> `python sap-vdm-catalog/fetch_catalog.py --only <VIEW>`. Only row-level behaviour (internal filters, DCL) still needs ADT Data Preview.
 - `naming.md` — full Naming Convention tables
 - `hana-rules.md` — HANA-safe SELECT patterns
 - `cds-rules.md` — CDS view-entity rules (parameter passing, COUNT DISTINCT, pivot via Table Function + AMDP, source view name verification)
