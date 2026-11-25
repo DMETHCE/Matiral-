@@ -18,7 +18,7 @@
 | 4. גרסה 1 | `/ILG/IMMGreenTrack` + שני Views מסכמים, על טבלאות סטנדרט. | `src/cds/ilg_immgreentrack.ddls.asddls` |
 | 5. Fiori | Cube + ALP + OVP (KPI, תרשימים, Visual Filters) ואפליקציות BAS. | `docs/fiori/*.md`, `src/fiori/` |
 | 6. Snapshot | תוכנית `/ILG/MM_GP_SNAP` וטבלה `/ILG/MM_GP_TRK` לשמירת תמונת מצב. | `src/abap/snapshot/` |
-| 7. גרסה 2 | `/ILG/IMMGreenTrack2`: אסוציאציות, מסמכי המשך מוכרעים משלושה מקורות (GRPO_DET → PM_NOTIF_BP → EKBE), סטורנו דרך AWREF_REV/AWORG_REV. | `src/cds/ilg_immgreentrack2.ddls.asddls`, `ilg_immgpsetdocs`, `ilg_immgppodocs` |
+| 7. גרסה 2 | `/ILG/IMMGreenStatus`: אסוציאציות, מסמכי המשך מוכרעים משלושה מקורות (GRPO_DET → PM_NOTIF_BP → EKBE), סטורנו דרך AWREF_REV/AWORG_REV. | `src/cds/ilg_immgreenstatus.ddls.asddls`, `ilg_immgpsetdocs`, `ilg_immgppodocs` |
 | 8. **VDM** (נוכחי) | כל השרשרת נכתבה מחדש על Views משוחררים של SAP בלבד + שלושה Views בסיס לטבלאות ILG. כל שם View ושדה אומת מול קטלוג api.sap.com. | `docs/cds/VDM_handoff.md`, `docs/cds/VDM_בדיקת_Views.xlsx`, `sap-vdm-catalog/` |
 
 ## מה בנוי היום (ענף `claude/analyze-create-cds-k48pte`)
@@ -31,7 +31,7 @@
 /ILG/IMMGpQmmaStatus       I_QltyNotificationActivity   -- קודי 50/60/70/80 (ZPU)
 /ILG/IMMGpClearing         I_JournalEntryItem           -- תשלום בפועל (סילוק '2%')
 /ILG/IMMGpSetDocs          GreenPathSet + NotifPaymentInvoice + PoDocs -- מסמכי המשך מוכרעים
-/ILG/IMMGreenTrack2        SetDocs + I_SupplierInvoiceAPI01 + I_JournalEntry x2
+/ILG/IMMGreenStatus        SetDocs + I_SupplierInvoiceAPI01 + I_JournalEntry x2
                            + I_ReversalReasonText + Clearing + Status -- עץ ההחלטות
 ```
 

@@ -1,7 +1,7 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Green Path Tracking v2 - live status per notification'
 /*
- * /ILG/IMMGreenTrack2
+ * /ILG/IMMGreenStatus
  * -------------------
  * View חי למעקב מסלול ירוק / בקרה מפצה - יורש של /ILG/IMMGreenTrack
  * (שנשאר כרפרנס). בנוי באסוציאציות על Views משוחררים (VDM) ועל
@@ -23,10 +23,10 @@
  *   _FiDoc          I_JournalEntry            OriginalReferenceDocument = BELNR+GJAHR, 'RMRP'
  *   _ReversalDoc    I_JournalEntry            מסמך הסטורנו
  *   _StgrdText      I_ReversalReasonText      טקסט סיבת סטורנו
- *   _Clearing       /ILG/IMMGpClearing2       תשלום בפועל
+ *   _Clearing       /ILG/IMMGpPayment       תשלום בפועל
  * שמות השדות של ה-VDM אומתו מול api.sap.com (25.11.2026).
  */
-define view entity /ILG/IMMGreenTrack2
+define view entity /ILG/IMMGreenStatus
   as select from /ilg/mm_grpo_det as grpo
 
   association [0..1] to /ILG/IMMGpSetFacts as _Facts
@@ -54,7 +54,7 @@ define view entity /ILG/IMMGreenTrack2
     on  $projection.Stgrd   = _StgrdText.ReversalReason
     and _StgrdText.Language = $session.system_language
 
-  association [0..1] to /ILG/IMMGpClearing2 as _Clearing
+  association [0..1] to /ILG/IMMGpPayment as _Clearing
     on  $projection.Bukrs   = _Clearing.Bukrs
     and $projection.BelnrFi = _Clearing.Belnr
     and $projection.GjahrFi = _Clearing.Gjahr

@@ -17,14 +17,14 @@
 | `/ILG/IMMGpQmmaStatus` | `QMMA` | `I_QltyNotificationActivity` |
 | `/ILG/IMMGpClearing` | `ACDOCA` | `I_JournalEntryItem` (`ClearingJournalEntry`) |
 | `/ILG/IMMGpSetDocs` | `/ILG/MM_GRPO_DET` + `/ILG/PM_NOTIF_BP` | `/ILG/I_GreenPathSet` + `/ILG/I_NotifPaymentInvoice` |
-| `/ILG/IMMGreenTrack2` | `RBKP`, `BKPF`×2, `T041CT` | `I_SupplierInvoiceAPI01`, `I_JournalEntry`×2, `I_ReversalReasonText` |
+| `/ILG/IMMGreenStatus` | `RBKP`, `BKPF`×2, `T041CT` | `I_SupplierInvoiceAPI01`, `I_JournalEntry`×2, `I_ReversalReasonText` |
 
 הלוגיקה (עץ ההחלטות, סדר העדיפות של מסמכי ההמשך, אסוציאציות) זהה לגרסה
 הקודמת; השתנו רק המקורות ושמות השדות.
 
 **סדר אקטיבציה ב-ADT:** `I_GreenPathSet`, `I_NotifPaymentInvoice`,
 `I_NotifPurchaseOrder` → `IMMGpPoDocs`, `IMMGpQmmaStatus`, `IMMGpClearing` →
-`IMMGpSetDocs` → `IMMGreenTrack2`.
+`IMMGpSetDocs` → `IMMGreenStatus`.
 
 ## 2. מה אומת מהאינטרנט
 

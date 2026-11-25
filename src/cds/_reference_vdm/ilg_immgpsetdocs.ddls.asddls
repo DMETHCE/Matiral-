@@ -1,7 +1,7 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Green Path - set with resolved follow-on documents'
 /*
- * /ILG/IMMGpSetDocs  -  שכבת הבסיס של /ILG/IMMGreenTrack2
+ * /ILG/IMMGpSetDocs  -  שכבת הבסיס של /ILG/IMMGreenStatus
  * ---------------------------------------------------------
  * שורה אחת לכל סט ב-/ILG/I_GreenPathSet, עם מסמכי ההמשך מוכרעים
  * משלושה מקורות לפי סדר עדיפות קבוע (הראשון שמלא קובע):
@@ -13,7 +13,7 @@
  *   'G' המסלול הירוק (GRPO_DET)   'P' חשבונית לתשלום (PM_NOTIF_BP)
  *   'E' היסטוריית ההזמנה (EKBE)    ''  לא נמצא
  *
- * ההכרעה מתבצעת כאן פעם אחת, כדי ש-/ILG/IMMGreenTrack2 יקשר
+ * ההכרעה מתבצעת כאן פעם אחת, כדי ש-/ILG/IMMGreenStatus יקשר
  * I_SupplierInvoiceAPI01 / I_JournalEntry / I_JournalEntryItem לפי
  * שדות רגילים - ולא יחזור על ה-CASE. NULL (אין שורה במקור) נופל
  * אוטומטית לענף הבא. כל המקורות הם Views של ILG - אפס טבלאות ישירות.

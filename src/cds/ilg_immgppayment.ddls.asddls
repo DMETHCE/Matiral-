@@ -1,7 +1,7 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
 @EndUserText.label: 'Green Path - vendor payment clearing (journal entry items)'
 /*
- * /ILG/IMMGpClearing2
+ * /ILG/IMMGpPayment
  * ------------------
  * בדיקת תשלום בפועל - שורת ספק שסולקה במסמך תשלום.
  *
@@ -20,7 +20,7 @@
  * ה-DCL של I_JournalEntryItem (ledger, קוד חברה, סוג חשבון, סגמנט) חל
  * גם בקריאה דרך View זה.
  */
-define view entity /ILG/IMMGpClearing2
+define view entity /ILG/IMMGpPayment
   as select from I_JournalEntryItem
 {
       @EndUserText.label: 'קוד חברה'
