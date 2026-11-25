@@ -83,6 +83,12 @@
 
 ## 3א. מה נשאר לבדוק ב-ADT
 
+**בדיקה מקדימה לפני אקטיבציה (מול `sap-vdm-catalog/`):** כל שמות ה-Views והשדות
+של SAP בשמונת ה-Views קיימים, Released, ולא Deprecated. שדות `/ILG/MM_GRPO_DET`
+תואמים ל-SE11 (`docs/tables/table_structures.md`). **לא מתועדים:** `/ILG/PM_NOTIF_BP`
+(`belnr`, `gjahr`, `inv`, `taxinv`, `creditinvoice`) ו-`/ILG/PM_NOTIF_PO` (`ebeln`) —
+שגיאת אקטיבציה ב-`I_NotifPaymentInvoice` / `I_NotifPurchaseOrder` תהיה כנראה שם.
+
 1. Data Preview על `/ILG/IMMGpQmmaStatus` (סעיף 3.2).
 2. **`/ILG/PM_NOTIF_BP`** — שמות השדות `TAXINV` / `CREDITINVOICE` לפי גיליון 4;
    לאמת מול SE11.
