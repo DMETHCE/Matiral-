@@ -1,5 +1,5 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
-@EndUserText.label: 'Green Path Tracking v2 - live status per notification'
+@EndUserText.label: 'Green Path - set status (VDM, documents resolved)'
 /*
  * /ILG/IMMGreenStatus
  * -------------------
