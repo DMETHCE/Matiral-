@@ -1,45 +1,35 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
-@EndUserText.label: 'Green Path - vendor payment clearing (journal entry items)'
+@EndUserText.label: 'Green Path - vendor payment clearing from ACDOCA'
 /*
- * /ILG/IMMGpClearing
- * ------------------
- * בדיקת תשלום בפועל - שורת ספק שסולקה במסמך תשלום.
+ * בדיקת תשלום בפועל - שורת ספק (KOART = 'K') שסולקה במסמך תשלום.
  *
- * מקור (VDM): I_JournalEntryItem - View משוחרר (Cube) על ACDOCA.
- *   Ledger                     = RLDNR   '0L' ledger מוביל בלבד; אם שונה אצלכם - לעדכן
- *   FinancialAccountType       = KOART   'K' = ספק
- *   ClearingJournalEntry       = AUGBL   מסמך הסילוק; לפי האפיון מסמך תשלום מתחיל
- *                                        ב-'2' - סטורנו שמסלק את שורת הספק אינו תשלום.
- *                                        (ClearingAccountingDocument מסומן Deprecated
- *                                        בקטלוג - היורש הוא ClearingJournalEntry)
- *   ClearingDate               = AUGDT
- *   CompanyCode / AccountingDocument / FiscalYear = RBUKRS / BELNR / GJAHR
- *
- * MAX( ) דטרמיניסטי; בסילוק במספר מסמכים Augbl/Augdt עלולים להגיע
- * משורות שונות (סעיף 6 באפיון ה-CDS).
- * ה-DCL של I_JournalEntryItem (ledger, קוד חברה, סוג חשבון, סגמנט) חל
- * גם בקריאה דרך View זה.
+ * RBUKRS          - שם שדה קוד החברה ב-ACDOCA (אין BUKRS).
+ * RLDNR = '0L'    - ledger מוביל בלבד; אם שונה אצלכם - לעדכן.
+ * AUGBL LIKE '2%' - לפי האפיון: מסמך תשלום מתחיל ב-2; סטורנו שמסלק
+ *                   את שורת הספק אינו תשלום.
+ * MAX( )          - דטרמיניסטי; בסילוק במספר מסמכים AUGBL/AUGDT עלולים
+ *                   להגיע משורות שונות (ראו סעיף 11 באפיון).
  */
 define view entity /ILG/IMMGpClearing
-  as select from I_JournalEntryItem
+  as select from acdoca
 {
       @EndUserText.label: 'קוד חברה'
-  key CompanyCode                        as Bukrs,
+  key rbukrs        as Bukrs,
       @EndUserText.label: 'מסמך פיננסי'
-  key AccountingDocument                 as Belnr,
+  key belnr         as Belnr,
       @EndUserText.label: 'שנת כספים'
-  key FiscalYear                         as Gjahr,
+  key gjahr         as Gjahr,
 
       @EndUserText.label: 'מסמך תשלום'
-      max( ClearingJournalEntry )        as Augbl,
+      max( augbl )  as Augbl,
       @EndUserText.label: 'תאריך תשלום'
-      max( ClearingDate )                as Augdt
+      max( augdt )  as Augdt
 }
 where
-      Ledger                     = '0L'
-  and FinancialAccountType       = 'K'
-  and ClearingJournalEntry       like '2%'
+      rldnr = '0L'
+  and koart = 'K'
+  and augbl like '2%'
 group by
-  CompanyCode,
-  AccountingDocument,
-  FiscalYear
+  rbukrs,
+  belnr,
+  gjahr
