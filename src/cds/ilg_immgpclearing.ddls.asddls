@@ -1,35 +1,43 @@
 @AccessControl.authorizationCheck: #NOT_REQUIRED
-@EndUserText.label: 'Green Path - vendor payment clearing from ACDOCA'
+@EndUserText.label: 'Green Path - vendor payment clearing (journal entry items)'
 /*
- * בדיקת תשלום בפועל - שורת ספק (KOART = 'K') שסולקה במסמך תשלום.
+ * /ILG/IMMGpClearing
+ * ------------------
+ * בדיקת תשלום בפועל - שורת ספק שסולקה במסמך תשלום.
  *
- * RBUKRS          - שם שדה קוד החברה ב-ACDOCA (אין BUKRS).
- * RLDNR = '0L'    - ledger מוביל בלבד; אם שונה אצלכם - לעדכן.
- * AUGBL LIKE '2%' - לפי האפיון: מסמך תשלום מתחיל ב-2; סטורנו שמסלק
- *                   את שורת הספק אינו תשלום.
- * MAX( )          - דטרמיניסטי; בסילוק במספר מסמכים AUGBL/AUGDT עלולים
- *                   להגיע משורות שונות (ראו סעיף 11 באפיון).
+ * מקור (VDM): I_JournalEntryItem - View משוחרר (Cube) על ACDOCA.
+ *   Ledger                     = RLDNR   '0L' ledger מוביל בלבד; אם שונה אצלכם - לעדכן
+ *   FinancialAccountType       = KOART   'K' = ספק
+ *   ClearingAccountingDocument = AUGBL   מסמך הסילוק; לפי האפיון מסמך תשלום מתחיל
+ *                                        ב-'2' - סטורנו שמסלק את שורת הספק אינו תשלום
+ *   ClearingDate               = AUGDT
+ *   CompanyCode / AccountingDocument / FiscalYear = RBUKRS / BELNR / GJAHR
+ *
+ * MAX( ) דטרמיניסטי; בסילוק במספר מסמכים Augbl/Augdt עלולים להגיע
+ * משורות שונות (סעיף 6 באפיון ה-CDS).
+ * ה-DCL של I_JournalEntryItem (ledger, קוד חברה, סוג חשבון, סגמנט) חל
+ * גם בקריאה דרך View זה.
  */
 define view entity /ILG/IMMGpClearing
-  as select from acdoca
+  as select from I_JournalEntryItem
 {
       @EndUserText.label: 'קוד חברה'
-  key rbukrs        as Bukrs,
+  key CompanyCode                        as Bukrs,
       @EndUserText.label: 'מסמך פיננסי'
-  key belnr         as Belnr,
+  key AccountingDocument                 as Belnr,
       @EndUserText.label: 'שנת כספים'
-  key gjahr         as Gjahr,
+  key FiscalYear                         as Gjahr,
 
       @EndUserText.label: 'מסמך תשלום'
-      max( augbl )  as Augbl,
+      max( ClearingAccountingDocument )  as Augbl,
       @EndUserText.label: 'תאריך תשלום'
-      max( augdt )  as Augdt
+      max( ClearingDate )                as Augdt
 }
 where
-      rldnr = '0L'
-  and koart = 'K'
-  and augbl like '2%'
+      Ledger                     = '0L'
+  and FinancialAccountType       = 'K'
+  and ClearingAccountingDocument like '2%'
 group by
-  rbukrs,
-  belnr,
-  gjahr
+  CompanyCode,
+  AccountingDocument,
+  FiscalYear

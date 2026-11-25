@@ -3,27 +3,28 @@
 /*
  * /ILG/IMMGpSetDocs  -  שכבת הבסיס של /ILG/IMMGreenTrack2
  * ---------------------------------------------------------
- * שורה אחת לכל סט ב-/ILG/MM_GRPO_DET, עם מסמכי ההמשך מוכרעים
+ * שורה אחת לכל סט ב-/ILG/I_GreenPathSet, עם מסמכי ההמשך מוכרעים
  * משלושה מקורות לפי סדר עדיפות קבוע (הראשון שמלא קובע):
  *
- *   חשבונית:  GRPO_DET.BELNR -> PM_NOTIF_BP.BELNR (INV='X') -> EKBE (VGABE=2)
- *   טובין:    GRPO_DET.MBLNR -> EKBE (VGABE=1)
+ *   חשבונית:  GreenPathSet.Belnr -> NotifPaymentInvoice.Belnr (Inv='X') -> PO history (type 2)
+ *   טובין:    GreenPathSet.Mblnr -> PO history (type 1)
  *
  * InvoiceSource / GrSource - מאיפה הגיע כל מסמך:
- *   'G' GRPO_DET (המסלול הירוק)   'P' PM_NOTIF_BP (חשבונית לתשלום)
- *   'E' EKBE (היסטוריית ההזמנה)    ''  לא נמצא
+ *   'G' המסלול הירוק (GRPO_DET)   'P' חשבונית לתשלום (PM_NOTIF_BP)
+ *   'E' היסטוריית ההזמנה (EKBE)    ''  לא נמצא
  *
  * ההכרעה מתבצעת כאן פעם אחת, כדי ש-/ILG/IMMGreenTrack2 יקשר
- * RBKP / BKPF / ACDOCA לפי שדות רגילים - ולא יחזור על ה-CASE.
- * NULL (אין שורה במקור) נופל אוטומטית לענף הבא.
+ * I_SupplierInvoiceAPI01 / I_JournalEntry / I_JournalEntryItem לפי
+ * שדות רגילים - ולא יחזור על ה-CASE. NULL (אין שורה במקור) נופל
+ * אוטומטית לענף הבא. כל המקורות הם Views של ILG - אפס טבלאות ישירות.
  */
 define view entity /ILG/IMMGpSetDocs
-  as select from /ilg/mm_grpo_det as grpo
+  as select from /ILG/I_GreenPathSet as grpo
 
   // חשבונית לתשלום שנרשמה על ההודעה (מפתח QMNUM בלבד - לכל היותר שורה אחת)
-  association [0..1] to /ilg/pm_notif_bp as _PaymentInvoice
-    on  $projection.Qmnum    = _PaymentInvoice.qmnum
-    and _PaymentInvoice.inv  = 'X'
+  association [0..1] to /ILG/I_NotifPaymentInvoice as _PaymentInvoice
+    on  $projection.Qmnum    = _PaymentInvoice.Qmnum
+    and _PaymentInvoice.Inv  = 'X'
 
   // מסמכי ההמשך מהיסטוריית ההזמנה (View מסכם - שורה אחת לסט)
   association [0..1] to /ILG/IMMGpPoDocs as _PoDocs
@@ -31,25 +32,25 @@ define view entity /ILG/IMMGpSetDocs
 
 {
       @EndUserText.label: 'מספר סט (הודעה)'
-  key grpo.qmnum                                              as Qmnum,
+  key grpo.Qmnum                                              as Qmnum,
 
-      grpo.monitor_indicator                                  as MonitorIndicator,
-      grpo.extra_vlue_ind                                     as ExtraValueInd,
-      grpo.mm_gr_doc_ind                                      as MmGrDocInd,
+      grpo.MonitorIndicator                                   as MonitorIndicator,
+      grpo.ExtraValueInd                                      as ExtraValueInd,
+      grpo.MmGrDocInd                                         as MmGrDocInd,
 
       // ---------------- חשבונית לוגיסטית ----------------
       @EndUserText.label: 'חשבונית לוגיסטית'
       case
-        when grpo.belnr             <> '' then grpo.belnr
-        when _PaymentInvoice.belnr  <> '' then _PaymentInvoice.belnr
+        when grpo.Belnr             <> '' then grpo.Belnr
+        when _PaymentInvoice.Belnr  <> '' then _PaymentInvoice.Belnr
         when _PoDocs.IrBelnr        <> '' then _PoDocs.IrBelnr
         else ''
       end                                                     as BelnrMm,
 
       @EndUserText.label: 'שנת כספים - חשבונית'
       case
-        when grpo.belnr             <> '' then grpo.gjahr
-        when _PaymentInvoice.belnr  <> '' then _PaymentInvoice.gjahr
+        when grpo.Belnr             <> '' then grpo.Gjahr
+        when _PaymentInvoice.Belnr  <> '' then _PaymentInvoice.Gjahr
         when _PoDocs.IrBelnr        <> '' then _PoDocs.IrGjahr
         else '0000'
       end                                                     as GjahrMm,
@@ -57,8 +58,8 @@ define view entity /ILG/IMMGpSetDocs
       @EndUserText.label: 'מקור החשבונית'
       cast(
         case
-          when grpo.belnr             <> '' then 'G'
-          when _PaymentInvoice.belnr  <> '' then 'P'
+          when grpo.Belnr             <> '' then 'G'
+          when _PaymentInvoice.Belnr  <> '' then 'P'
           when _PoDocs.IrBelnr        <> '' then 'E'
           else ''
         end as abap.char(1) )                                 as InvoiceSource,
@@ -66,7 +67,7 @@ define view entity /ILG/IMMGpSetDocs
       // ---------------- קבלת טובין ----------------
       @EndUserText.label: 'מסמך קבלת טובין'
       case
-        when grpo.mblnr      <> '' then grpo.mblnr
+        when grpo.Mblnr      <> '' then grpo.Mblnr
         when _PoDocs.GrBelnr <> '' then _PoDocs.GrBelnr
         else ''
       end                                                     as Mblnr,
@@ -74,7 +75,7 @@ define view entity /ILG/IMMGpSetDocs
       @EndUserText.label: 'מקור מסמך הטובין'
       cast(
         case
-          when grpo.mblnr      <> '' then 'G'
+          when grpo.Mblnr      <> '' then 'G'
           when _PoDocs.GrBelnr <> '' then 'E'
           else ''
         end as abap.char(1) )                                 as GrSource,
