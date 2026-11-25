@@ -16,10 +16,10 @@
  *                                              (תנאי ה-join הרשמי מתיעוד I_SupplierInvoiceAPI01)
  *   -> _ReversalDoc I_JournalEntry             OriginalReferenceDocument = ReversalReferenceDocument
  *                                              + ReversalReferenceDocumentCntxt של המסמך המקורי
- *                                              (STBLG/STJAH ריקים בסטורנו MR8M)
+ *                                              (AWREF_REV / AWORG_REV, שניהם CHAR10 - אומת ב-api.sap.com;
+ *                                              STBLG/STJAH ריקים בסטורנו MR8M)
  *   -> _StgrdText   I_ReversalReasonText       טקסט סיבת הסטורנו בשפת המשתמש
- *                                              !! שם ה-View ושדה ReversalReasonName לפי קונבנציה -
- *                                              לאמת ב-ADT; חלופה: I_ReversalReason._Text
+ *                                              (Basic / Released: Language, ReversalReason, ReversalReasonName)
  *   -> _Clearing    /ILG/IMMGpClearing         תשלום בפועל (I_JournalEntryItem, סילוק '2%')
  *
  * כל תנאי ON משתמש בשדות $projection רגילים או שהוגדרו בשכבה קודמת

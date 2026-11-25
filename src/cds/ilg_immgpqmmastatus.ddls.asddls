@@ -10,15 +10,14 @@
  * על טבלת הפעילויות QMMA. שדות מתועדים ב-help.sap.com:
  *   QualityNotification  = QMNUM    NotificationActivity = MANUM
  *
- * !! לאמת ב-ADT (Outline של I_QltyNotificationActivity) - שלושה שמות
- *    שאינם מתועדים באינטרנט ונכתבו לפי קונבנציית ה-VDM:
- *   NotifActivityCodeGroup = MNGRP   (קבוצת קודים 'ZPU' - אומת מול VIQMMA)
- *   NotifActivityCode      = MNCOD   (קוד הפעילות)
- *   IsDeleted              = KZLOESCH (פעילות שסומנה למחיקה אינה נספרת;
- *                            אם ה-View כבר מסנן מחוקות - למחוק את התנאי)
+ * מיפוי שדות (אומת ב-api.sap.com, Composite / Released):
+ *   NotifActivityCodeGroup = MNGRP    (קבוצת קודים 'ZPU' - אומת מול VIQMMA)
+ *   NotifActivityCode      = MNCOD    (קוד הפעילות)
+ *   IsDeleted              = KZLOESCH (פעילות שסומנה למחיקה אינה נספרת)
  *
- * אם הודעות המסלול הירוק הן הודעות PM (לא QM), ה-View לעיל עלול להחזיר
- * 0 שורות; החלופה המשוחררת היא I_MaintNotificationActyData (SAP ממליצה
+ * סיכון פתוח: SAP מתעדת את ה-View להודעות איכות, והודעות המסלול הירוק
+ * הן הודעות PM. לבדוק ב-Data Preview שהוא מחזיר שורות ל-QMNUM מוכר;
+ * אם לא - החלופה המשוחררת היא I_MaintNotificationActyData (SAP ממליצה
  * עליה ל-BW בלבד) - להחליף מקור ושמות שדות בהתאם.
  */
 define view entity /ILG/IMMGpQmmaStatus

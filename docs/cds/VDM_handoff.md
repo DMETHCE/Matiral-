@@ -60,34 +60,37 @@
   `AccountingDocument`, `FinancialAccountType`, `ClearingAccountingDocument`,
   `ClearingDate`.
 
-## 3. מה לא נמצא / לבדוק ב-ADT (Ctrl+Shift+A → Outline)
+## 3. סטטוס הפערים (אומתו ידנית ב-api.sap.com)
 
-1. **`I_JournalEntry`** — לאשר שקיימים `ReversalReferenceDocument` ו-
-   `ReversalReferenceDocumentCntxt` בכותרת (מקור משני בלבד). אם לא — להחליף
-   ל-`ReverseDocument`/`ReverseDocumentFiscalYear` ולזכור שבסטורנו MR8M הם
-   ריקים (הבעיה המקורית).
-2. **`I_QltyNotificationActivity`** — שלושה שמות לא מתועדים, נכתבו לפי קונבנציה:
-   `NotifActivityCodeGroup` (MNGRP), `NotifActivityCode` (MNCOD),
-   `IsDeleted` (KZLOESCH). לתקן ב-`ilg_immgpqmmastatus` לפי ה-Outline.
-   בנוסף: אם הודעות המסלול הירוק הן הודעות **PM** ולא QM, ה-View עלול להחזיר
-   0 שורות (Data Preview על QMNUM מוכר) — אז לעבור ל-`I_MaintNotificationActyData`.
-3. **טקסט סיבת סטורנו** — `I_ReversalReasonText` עם `ReversalReason`,
-   `Language`, `ReversalReasonName` לא נמצא באינטרנט; נכתב לפי קונבנציה.
-   חלופות: `I_ReversalReason._Text`, או לוותר על `StgrdTxt` בשלב ראשון.
-4. **`/ILG/PM_NOTIF_BP`** — שמות השדות `TAXINV` / `CREDITINVOICE` לפי גיליון 4;
+1. ✅ **`I_JournalEntry`** (Basic, Released) — `ReversalReferenceDocument`
+   (AWREF_REV) ו-`ReversalReferenceDocumentCntxt` (AWORG_REV) קיימים בכותרת,
+   שניהם CHAR10. AWKEY = `OriginalReferenceDocument`. הקוד תואם.
+2. ✅ **`I_QltyNotificationActivity`** (Composite, Released) —
+   `QualityNotification` / `NotifActivityCodeGroup` / `NotifActivityCode` /
+   `IsDeleted`. הקוד תואם.
+   ⚠️ **נותר לבדוק ב-ADT:** SAP מתעדת את ה-View להודעות איכות, והודעות
+   המסלול הירוק הן PM. Data Preview על QMNUM מוכר חייב להחזיר שורות; אם לא —
+   לעבור ל-`I_MaintNotificationActyData` (Released, מומלץ ל-BW בלבד).
+3. ✅ **`I_ReversalReasonText`** (Basic, Released) — `Language`,
+   `ReversalReason`, `ReversalReasonName`. הקוד תואם.
+
+## 3א. מה נשאר לבדוק ב-ADT
+
+1. Data Preview על `/ILG/IMMGpQmmaStatus` (סעיף 3.2).
+2. **`/ILG/PM_NOTIF_BP`** — שמות השדות `TAXINV` / `CREDITINVOICE` לפי גיליון 4;
    לאמת מול SE11.
-5. **DCL** — `I_PurchaseOrderHistoryAPI01` ו-`I_JournalEntryItem` כפופים ל-DCL
+3. **DCL** — `I_PurchaseOrderHistoryAPI01` ו-`I_JournalEntryItem` כפופים ל-DCL
    של SAP; ב-Data Preview ייתכן שחסרות שורות למשתמש ללא הרשאות
    (M_BEST_EKO/EKG/BSA/WRK, F_BKPF_BUK, ledger).
-6. `R_PURCRECORDER` — לא נמצא באינטרנט; EKKO/EKPO = `I_PurchaseOrderAPI01` /
+4. `R_PURCRECORDER` — לא נמצא באינטרנט; EKKO/EKPO = `I_PurchaseOrderAPI01` /
    `I_PurchaseOrderItemAPI01`.
 
-## 4. הנחיה מוכנה לסשן מקומי (להדביק ב-Claude Desktop → Claude Code, תיקיית המאגר)
+## 4. עבודה על המאגר מסשן מקומי
 
 ```
-ענף claude/analyze-create-cds-k48pte. קרא docs/cds/VDM_handoff.md ו-.claude/skills/abap-ilg/SKILL.md.
-פתח בדפדפן api.sap.com (אני אתחבר) ואמת את שלושת הפערים בסעיף 3: שדות I_JournalEntry
-(ReversalReferenceDocument / ReversalReferenceDocumentCntxt), שמות השדות של
-I_QltyNotificationActivity (MNGRP/MNCOD/KZLOESCH), ו-View הטקסט של I_ReversalReason.
-תקן את src/cds לפי הממצאים, עדכן את docs/cds/VDM_בדיקת_Views.xlsx, commit + push.
+git clone https://github.com/DMETHCE/Matiral-.git
+cd Matiral-
+git checkout claude/analyze-create-cds-k48pte
 ```
+(אם המאגר כבר משוכפל: `git fetch origin && git checkout claude/analyze-create-cds-k48pte && git pull`.)
+השלב הבא הוא אקטיבציה ב-ADT לפי סדר סעיף 1 ובדיקות סעיף 3א.
